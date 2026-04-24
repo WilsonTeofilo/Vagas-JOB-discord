@@ -22,6 +22,16 @@
   --r-lg:  1rem;
   --r-xl:  1.5rem;
   --shadow: 0 32px 64px -12px rgba(0,0,0,0.7);
+
+  /* ─── Theme system vars (controlados pelo editor de temas) ─── */
+  --grid-color:   rgba(255,255,255,0.025);
+  --glow-opacity: 1;
+  --glow-color-1: rgba(220,38,38,0.12);
+  --glow-color-2: rgba(220,38,38,0.10);
+  --glow-pos-x-1: 15%;
+  --glow-pos-y-1: 10%;
+  --glow-pos-x-2: 85%;
+  --glow-pos-y-2: 90%;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -43,8 +53,8 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
   background-size: 48px 48px;
   pointer-events: none;
   z-index: 0;
@@ -55,8 +65,9 @@ body::after {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 15% 10%, rgba(220,38,38,0.12) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 85% 90%, rgba(220,38,38,0.10) 0%, transparent 70%);
+    radial-gradient(ellipse 60% 50% at var(--glow-pos-x-1) var(--glow-pos-y-1), var(--glow-color-1) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at var(--glow-pos-x-2) var(--glow-pos-y-2), var(--glow-color-2) 0%, transparent 70%);
+  opacity: var(--glow-opacity);
   pointer-events: none;
   z-index: 0;
 }

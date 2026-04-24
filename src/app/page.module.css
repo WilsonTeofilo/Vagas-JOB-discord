@@ -295,6 +295,20 @@
   max-width: 300px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.65;
+}
+
+.communityLink {
+  color: #818cf8;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(129,140,248,0.35);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.communityLink:hover {
+  color: #a5b4fc;
+  border-bottom-color: rgba(165,180,252,0.6);
 }
 
 .btnDiscord {

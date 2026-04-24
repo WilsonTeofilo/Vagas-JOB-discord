@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { TOP_FACULDADES, CURSOS, NIVEIS_ENSINO } from "../data/education";
 import styles from "../app/page.module.css";
+import { BRAND } from "../lib/brand";
+import ThemeSelector from "./ThemeSelector";
 
 // ─── SVG Icons ─────────────────────────────────────────────────────────────
 const DiscordIcon = () => (
@@ -229,7 +231,16 @@ export default function JobForm() {
         </div>
         <h2 className={styles.loginTitle}>Acesso Restrito</h2>
         <p className={styles.loginSub}>
-          Faça login com sua conta do Discord para publicar vagas ou serviços na comunidade.
+          Faça login com sua conta do Discord para publicar vagas na{' '}
+          <a
+            href={BRAND.discordInvite}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.communityLink}
+          >
+            comunidade {BRAND.communityName}
+          </a>
+          .
         </p>
         <button type="button" className={styles.btnDiscord} onClick={() => signIn('discord')}>
           <DiscordIcon /> Entrar com Discord
@@ -392,7 +403,10 @@ export default function JobForm() {
           <span className={styles.userName}>{session.user?.name}</span>
           <span className={styles.userBadge}>Discord</span>
         </div>
-        <button type="button" className="btn-ghost" onClick={() => signOut({ callbackUrl: '/', redirect: true })} style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}>Sair</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <ThemeSelector />
+          <button type="button" className="btn-ghost" onClick={() => signOut({ callbackUrl: '/', redirect: true })} style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}>Sair</button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -452,6 +466,25 @@ export default function JobForm() {
             <button type="button" className="btn-primary" style={{ width: '100%', padding: '0.8rem' }} onClick={() => setFeedback({ type: '', message: '' })}>
               {feedback.type === 'success' ? 'Continuar' : 'Fechar e Tentar Novamente'}
             </button>
+            {feedback.type === 'success' && process.env.NEXT_PUBLIC_DISCORD_SERVER_URL && (
+              <a
+                href={process.env.NEXT_PUBLIC_DISCORD_SERVER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  marginTop: '0.75rem', padding: '0.75rem', borderRadius: 'var(--r-md)',
+                  background: 'rgba(88, 101, 242, 0.12)', border: '1px solid rgba(88, 101, 242, 0.3)',
+                  color: '#7289da', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500,
+                  transition: 'background 0.2s, border-color 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(88,101,242,0.22)'; e.currentTarget.style.borderColor = 'rgba(88,101,242,0.5)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(88,101,242,0.12)'; e.currentTarget.style.borderColor = 'rgba(88,101,242,0.3)'; }}
+              >
+                <DiscordIcon />
+                🎉 Entrar na comunidade
+              </a>
+            )}
           </div>
           <style dangerouslySetInnerHTML={{__html: `
             @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

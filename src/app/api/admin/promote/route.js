@@ -7,8 +7,13 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { promoteSchema } from '../../../../validations/schemas';
 import { isRootAdmin, promoteToAdmin } from '../../../../services/job.service';
+import { verifyCsrf } from '../../../../lib/csrf';
 
 export async function POST(request) {
+  if (!verifyCsrf(request)) {
+    return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
+  }
+
   // 1. Autenticação
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.redirect(new URL('/', request.url));
