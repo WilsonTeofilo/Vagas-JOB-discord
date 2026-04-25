@@ -31,8 +31,8 @@ export async function POST(request) {
       action: formData.get('action'),
       reason: formData.get('reason') || undefined,
     });
-  } catch {
-    return NextResponse.redirect(new URL('/admin', request.url));
+  } catch (err) {
+    return NextResponse.json({ error: 'Dados inválidos.' }, { status: 400 });
   }
 
   // 4. Executa a ação
@@ -44,6 +44,6 @@ export async function POST(request) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 
-  // Se foi via form nativo, tem um redirect. Se foi via fetch client-side, ele apenas lê o json.
-  return NextResponse.redirect(new URL('/admin', request.url));
+  // Retorna JSON para o componente client-side (que já faz router.refresh)
+  return NextResponse.json({ success: true });
 }
