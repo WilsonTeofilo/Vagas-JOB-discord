@@ -34,7 +34,7 @@ function SearchableSelect({ options, value, onChange, placeholder, allowOther = 
   const [otherValue, setOtherValue] = useState('');
   const ref = useRef(null);
 
-  const filtered = options.filter(o => o.toLowerCase().includes(query.toLowerCase())).slice(0, 10);
+  const filtered = options.filter(o => o.toLowerCase().includes(query.toLowerCase())).slice(0, 100);
 
   const select = (opt) => {
     if (opt === '__other__') {
