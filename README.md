@@ -210,7 +210,7 @@ copie do seu terminal o endereço localhost, ex: `http://localhost:3000` — ap�
 
 | Etapa | O que configura |
 |-------|----------------|
-| 1️⃣ Banco de Dados | URL de conexão PostgreSQL (Neon DB). **Nota:** Ao criar a conta, coloque o nome da Organization. No projeto, deixe o "Neon Auth" desligado e escolha sua região (ex: São Paulo). Após criar, você pode copiar a "Connection string" revelando a senha com "Show password" e clicando em "Copy snippet". Ou clique em "Go to project", vá no botão "Connect", habilite "Show password" e copie o snippet. |
+| 1️⃣ Banco de Dados | URL de conexão PostgreSQL (Neon DB). **Nota:** Ao criar a conta, coloque o nome da Organization. No projeto, mantenha a opção "Neon Auth" DESLIGADA e escolha sua região (ex: São Paulo). Após criar, você pode copiar a "Connection string" revelando a senha com "Show password" e clicando em "Copy snippet". Ou clique em "Go to project", vá no botão "Connect", habilite "Show password" e copie o snippet. |
 | 2️⃣ Webhooks Discord | URLs dos canais de vagas e freelancers |
 | 3️⃣ App Discord | Client ID e Client Secret para OAuth2. Acesse a aba "OAuth2", crie um Redirect, cole a URL exata do seu site e salve. |
 | 4️⃣ Autenticação | NEXTAUTH_SECRET (pode gerar automaticamente) e URL do site |
