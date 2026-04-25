@@ -7,11 +7,11 @@ import s from './landing.module.css';
 
 export const metadata = {
   title: 'Trampo — Mural de Vagas e Oportunidades para Comunidades Discord',
-  description: 'Publique vagas de emprego e serviços freelancer direto no seu servidor Discord. Grátis, open source, pronto para usar em qualquer nicho.',
+  description: 'Publique vagas de emprego e serviços freelancer direto no seu servidor Discord. Grátis, open source, 100% personalizável com painel de temas, anúncios e formulários dinâmicos.',
   alternates: { canonical: process.env.NEXTAUTH_URL ?? 'https://trampo.vercel.app' },
   openGraph: {
     title: 'Trampo — Mural de Vagas para Discord',
-    description: 'Plataforma open source de vagas e freelancers integrada ao Discord.',
+    description: 'Plataforma open source de vagas e freelancers integrada ao Discord. Totalmente personalizável com temas e formulários próprios.',
     type: 'website',
     url: process.env.NEXTAUTH_URL,
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Trampo — Mural de Vagas' }],

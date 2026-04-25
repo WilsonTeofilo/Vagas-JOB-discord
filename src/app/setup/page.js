@@ -294,9 +294,9 @@ export default function SetupPage() {
 
               <Hint title="Como criar seu banco no Neon DB" defaultOpen>
                 <HintStep n="1">Acesse <strong>neon.tech</strong> e crie uma conta gratuita.</HintStep>
-                <HintStep n="2">Clique em <strong>"New Project"</strong>, dê um nome (não ative o Neon Auth).</HintStep>
-                <HintStep n="3">No painel do projeto, vá em <strong>"Connection Details"</strong>.</HintStep>
-                <HintStep n="4">Selecione <strong>"Connection string"</strong> (conexão padrão) e copie a URL.</HintStep>
+                <HintStep n="2">Clique em <strong>"New Project"</strong>, dê um nome e crie o projeto (não ative o Neon Auth).</HintStep>
+                <HintStep n="3">No painel principal do projeto, localize o botão branco <strong>Connect</strong> (na parte superior ou no meio da tela).</HintStep>
+                <HintStep n="4">Na caixa <strong>"Connection string"</strong>, clique no ícone de <strong>Mostrar Senha</strong> (olho) para revelar a senha ou simplesmente use o botão de <strong>Copiar</strong> ao lado do texto para não copiar a senha com asteriscos e dar erro.</HintStep>
                 <HintStep n="5">A URL começa com <code style={{ color: '#818cf8' }}>postgresql://</code></HintStep>
                 <a href="https://neon.tech" target="_blank" rel="noopener noreferrer" className={s.hintLink}>
                   <IconExternal /> Abrir Neon DB
@@ -382,16 +382,16 @@ export default function SetupPage() {
               <Hint title="Como criar o App no Discord Developer Portal" defaultOpen>
                 <HintStep n="1">Acesse <strong>discord.com/developers/applications</strong>.</HintStep>
                 <HintStep n="2">Clique em <strong>"New Application"</strong>, dê um nome e confirme.</HintStep>
-                <HintStep n="3">No menu lateral, clique em <strong>OAuth2 → General</strong>.</HintStep>
+                <HintStep n="3">No menu lateral esquerdo, clique na aba <strong>OAuth2</strong> (pode não ter "General", clique apenas em OAuth2).</HintStep>
                 <HintStep n="4">Copie o <strong>Client ID</strong> e clique em <strong>"Reset Secret"</strong> para obter o Client Secret.</HintStep>
-                <HintStep n="5">Em <strong>"Redirects"</strong>, clique em <strong>"Add Redirect"</strong> e cole a URL abaixo.</HintStep>
+                <HintStep n="5">Role um pouco para baixo até achar a seção <strong>"Redirects"</strong>, clique em <strong>"Add Redirect"</strong> e cole EXATAMENTE a URL de redirect gerada logo abaixo. Não esqueça de salvar.</HintStep>
                 <a href="https://discord.com/developers/applications" target="_blank" rel="noopener noreferrer" className={s.hintLink}>
                   <IconExternal /> Abrir Developer Portal
                 </a>
               </Hint>
 
               <div className={s.fieldGroup}>
-                <label className={s.fieldLabel}>URL de Redirect — adicione esta URL exata no Discord</label>
+                <label className={s.fieldLabel}>URL de Redirect — adicione esta URL exata na seção "Redirects" no Discord</label>
                 <div className={s.codeBlock}>
                   <span className={s.codeValue}>{callbackUrl}</span>
                   <CopyBtn text={callbackUrl} id="callback" copied={copied} onCopy={copyText} />
@@ -546,11 +546,16 @@ export default function SetupPage() {
               <p className={s.doneDesc}>
                 O arquivo <code style={{ color: '#818cf8' }}>.env.local</code> foi gerado com sucesso e<br />
                 <strong>as tabelas do banco de dados foram criadas automaticamente!</strong><br /><br />
-                O servidor encerrou para aplicar as novas variáveis de ambiente.
+                O servidor (onde você rodou "npm run dev") encerrou sozinho para aplicar as configurações.
               </p>
 
               <div className={s.doneCmd}>
-                <div className={s.doneCmdLabel}>Inicie o servidor novamente:</div>
+                <div className={s.doneCmdLabel}>O que fazer agora para o site voltar a funcionar:</div>
+                <ol style={{ textAlign: 'left', margin: '0.5rem 0', fontSize: '0.9rem', color: '#a1a1aa' }}>
+                  <li>Volte para o seu terminal ou prompt de comando.</li>
+                  <li>Caso o processo não tenha parado, pressione <strong>CTRL + C</strong>.</li>
+                  <li>Inicie o servidor de novo copiando e colando o comando abaixo:</li>
+                </ol>
                 <div className={s.codeBlock}>
                   <span className={s.codeValue}>npm run dev</span>
                   <CopyBtn text="npm run dev" id="cmd1" copied={copied} onCopy={copyText} />
@@ -558,7 +563,9 @@ export default function SetupPage() {
               </div>
 
               <p style={{ fontSize: '0.8rem', color: '#52525b', marginTop: '0.5rem', marginBottom: '1.5rem' }}>
-                Após reiniciar, acesse <strong style={{ color: '#a1a1aa' }}>http://localhost:3000</strong> — o sistema estará pronto. ✨
+                Após reiniciar, atualize a página (pressione F5) ou acesse <strong style={{ color: '#a1a1aa' }}>http://localhost:3000</strong>.
+                <br /><br />
+                <strong>Você será o dono!</strong> Ao fazer o login com o Discord pela primeira vez, sua conta será registrada automaticamente como Administrador Root.
               </p>
             </div>
           </>

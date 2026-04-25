@@ -210,9 +210,9 @@ Abra `http://localhost:3000` — o wizard inicia automaticamente e guia você po
 
 | Etapa | O que configura |
 |-------|----------------|
-| 1️⃣ Banco de Dados | URL de conexão PostgreSQL (Neon DB). **Nota:** Não ative o "Neon Auth". |
+| 1️⃣ Banco de Dados | URL de conexão PostgreSQL (Neon DB). **Nota:** Crie o projeto, clique no botão "Connect" e copie a "Connection string" (clique no ícone de "Copy" para vir a senha junto, se copiar o texto com asteriscos vai dar erro). Não ative o "Neon Auth". |
 | 2️⃣ Webhooks Discord | URLs dos canais de vagas e freelancers |
-| 3️⃣ App Discord | Client ID e Client Secret para OAuth2 |
+| 3️⃣ App Discord | Client ID e Client Secret para OAuth2. Acesse a aba "OAuth2", crie um Redirect, cole a URL exata do seu site e salve. |
 | 4️⃣ Autenticação | NEXTAUTH_SECRET (pode gerar automaticamente) e URL do site |
 | 5️⃣ Comunidade | Link permanente de convite do seu servidor |
 
@@ -266,12 +266,13 @@ DISCORD_CLIENT_SECRET="secret_do_seu_app"
 
 ### Como criar o App no Discord Developer Portal
 
-1. Acesse [discord.com/developers/applications](https://discord.com/developers/applications) → **New Application**
-2. No menu lateral: **OAuth2 → General**
-3. Copie o **Client ID** e clique em **Reset Secret** para obter o Client Secret
-4. Em **Redirects**, adicione a URL exata:
+1. Acesse [discord.com/developers/applications](https://discord.com/developers/applications) → **New Application** e dê um nome.
+2. No menu lateral esquerdo, clique na aba **OAuth2** (pode não ter a opção "General", clique apenas em OAuth2).
+3. Copie o **Client ID** e clique no botão **Reset Secret** para revelar e obter o Client Secret.
+4. Role a página até a seção **Redirects**, clique em "Add Redirect" e cole a URL exata:
    - **Local:** `http://localhost:3000/api/auth/callback/discord`
    - **Produção:** `https://seu-dominio.vercel.app/api/auth/callback/discord`
+   - **(Não esqueça de clicar no botão verde para Salvar as alterações)**
 
 ```bash
 # Crie as tabelas no banco (apenas na primeira vez)

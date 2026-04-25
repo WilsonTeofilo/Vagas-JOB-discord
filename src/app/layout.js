@@ -27,7 +27,7 @@ export const metadata = {
     template: "%s — Trampo",
   },
   description: "Publique vagas de emprego e serviços freelancer diretamente na comunidade do Discord. Grátis, open source e seguro.",
-  keywords: ["vagas de emprego", "freelancer", "discord", "comunidade", "trampo", "oportunidades", "ti", "tecnologia"],
+  keywords: ["vagas de emprego", "freelancer", "discord", "comunidade", "trampo", "oportunidades", "ti", "tecnologia", "job board", "mural de vagas", "sistema de anúncios", "temas personalizáveis", "nextjs", "open source", "classificados"],
   authors: [{ name: "Wilson Teofilo", url: "https://github.com/WilsonTeofilo" }],
   creator: "Wilson Teofilo",
   openGraph: {
