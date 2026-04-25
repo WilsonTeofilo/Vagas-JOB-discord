@@ -297,7 +297,7 @@ export default function SetupPage() {
 
               <Hint title="Como criar seu banco no Neon DB" defaultOpen>
                 <HintStep n="1">Acesse <strong>neon.tech</strong>, crie uma conta gratuita, coloque o nome da sua <strong>Organization</strong> e clique em Next.</HintStep>
-                <HintStep n="2">Coloque o nome do projeto, verifique se o <strong>Neon Auth está DESLIGADO</strong>, escolha a sua região (ex: São Paulo) e clique em <strong>Create Project</strong>.</HintStep>
+                <HintStep n="2">Coloque o nome do projeto, mantenha a opção <strong>Neon Auth DESLIGADA</strong>, escolha a sua região (ex: São Paulo) e clique em <strong>Create Project</strong>.</HintStep>
                 <HintStep n="3">Na tela seguinte, você pode ir direto na área <strong>Connection string</strong>, clicar em <strong>Show password</strong> (olho) e depois no botão <strong>Copy snippet</strong>.</HintStep>
                 <HintStep n="4"><strong>OU</strong> clique em <strong>Go to project</strong>, depois no botão branco <strong>Connect</strong>, vá em "Connect to your database", ative o <strong>Show password</strong> e clique em <strong>Copy snippet</strong>.</HintStep>
                 <HintStep n="5">A URL copiada sempre começa com <code style={{ color: '#818cf8' }}>postgresql://</code></HintStep>
