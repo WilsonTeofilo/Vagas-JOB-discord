@@ -9,6 +9,7 @@ import {
   setUserThemePreference,
   clearUserThemePreference,
 } from '../../../../services/theme.service';
+import { revalidatePath } from 'next/cache';
 
 // CVE-3 fix: cuid tem formato específico — rejeita qualquer outra coisa
 const CUID_RE = /^c[a-z0-9]{24,}$/i;
@@ -43,6 +44,7 @@ export async function PUT(request) {
 
   try {
     await setUserThemePreference(session.user.id, themeId);
+    revalidatePath('/', 'layout');
     return NextResponse.json({ success: true });
   } catch (err) {
     // Erros de negócio (tema não existe) são seguros de expor
@@ -60,5 +62,6 @@ export async function DELETE() {
   } catch {
     // Silencia — deleteMany não lança erro se não há registro
   }
+  revalidatePath('/', 'layout');
   return NextResponse.json({ success: true });
 }

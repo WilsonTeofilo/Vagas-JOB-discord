@@ -21,7 +21,7 @@ export default function ThemePreviewListener() {
       if (!styleEl) {
         styleEl = document.createElement('style');
         styleEl.id = 'theme-preview-inject';
-        document.head.appendChild(styleEl);
+        document.body.appendChild(styleEl);
       }
       styleEl.textContent = css || '';
     }

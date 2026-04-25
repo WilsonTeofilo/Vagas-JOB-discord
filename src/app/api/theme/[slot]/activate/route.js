@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import { isRootAdmin } from '../../../../../services/job.service';
-import { getThemeBySlot, setDefaultTheme } from '../../../../../services/theme.service';
+import { getThemeBySlot, setDefaultTheme, clearUserThemePreference } from '../../../../../services/theme.service';
+import { revalidatePath } from 'next/cache';
 
 export async function PUT(_, { params }) {
   const session = await getServerSession(authOptions);
@@ -18,5 +19,7 @@ export async function PUT(_, { params }) {
   if (!theme) return NextResponse.json({ error: 'Tema não encontrado.' }, { status: 404 });
 
   await setDefaultTheme(theme.id);
+  await clearUserThemePreference(session.user.id);
+  revalidatePath('/', 'layout');
   return NextResponse.json({ success: true });
 }

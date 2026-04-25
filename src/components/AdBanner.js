@@ -13,6 +13,12 @@ export default function AdBanner({ variant = 'float' }) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
+    // Esconde o anúncio se estiver rodando dentro de um iframe (como no Theme Preview)
+    if (typeof window !== 'undefined' && window.self !== window.top) {
+      setVisible(false);
+      return;
+    }
+
     fetch('/api/ads')
       .then(r => r.json())
       .then(data => { if (data?.targetUrl) setAd(data); })

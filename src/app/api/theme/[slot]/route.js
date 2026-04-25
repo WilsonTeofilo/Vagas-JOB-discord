@@ -10,6 +10,7 @@ import {
   upsertTheme,
   deleteTheme,
 } from '../../../../services/theme.service';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(_, { params }) {
   const { slot: slotParam } = await params;
@@ -40,6 +41,7 @@ export async function PUT(request, { params }) {
 
   try {
     const theme = await upsertTheme(slot, body);
+    revalidatePath('/', 'layout');
     return NextResponse.json(theme);
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 400 });
@@ -59,5 +61,6 @@ export async function DELETE(_, { params }) {
   if (!theme) return NextResponse.json({ error: 'Tema não encontrado.' }, { status: 404 });
 
   await deleteTheme(theme.id);
+  revalidatePath('/', 'layout');
   return NextResponse.json({ success: true });
 }

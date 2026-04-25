@@ -44,12 +44,6 @@ export const metadata = {
     description: "Plataforma open source de vagas e freelancers integrada ao Discord.",
     images: ["/og-image.png"],
   },
-  icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png", sizes: "512x512" },
-    ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
-  },
   robots: {
     index: true,
     follow: true,
