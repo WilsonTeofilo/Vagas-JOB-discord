@@ -6,6 +6,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { BRAND } from '../lib/brand';
 import DonationModal from './DonationModal';
 import ThemeSelector from './ThemeSelector';
+import NotificationsMenu from './NotificationsMenu';
 import s from './GlobalHeader.module.css';
 
 const DownloadIcon = () => (
@@ -124,8 +125,10 @@ export default function GlobalHeader() {
                 Login
               </button>
             ) : (
-              <div className={s.avatarWrap} ref={menuRef}>
-                <button
+              <>
+                <NotificationsMenu />
+                <div className={s.avatarWrap} ref={menuRef}>
+                  <button
                   type="button"
                   className={s.avatarBtn}
                   onClick={() => setMenuOpen(v => !v)}
@@ -200,6 +203,7 @@ export default function GlobalHeader() {
                   </div>
                 )}
               </div>
+            </>
             )}
           </div>
         </div>

@@ -127,13 +127,34 @@ export async function approveJobPost(id) {
 
   await sendToDiscord({ body, discordId: job.discordId });
   await prisma.jobPost.update({ where: { id }, data: { status: 'APPROVED' } });
+
+  // Notifica o autor
+  await prisma.notification.create({
+    data: {
+      discordId: job.discordId,
+      title: '✅ Publicação Aprovada',
+      message: `Sua postagem de ${job.type === 'vagas' ? 'Vaga' : 'Freelancer'} foi aprovada e enviada para o Discord!`,
+    }
+  });
 }
 
 /**
  * Rejeita uma vaga pendente.
  */
 export async function rejectJobPost(id) {
-  await prisma.jobPost.update({ where: { id }, data: { status: 'REJECTED' } });
+  const job = await prisma.jobPost.findUnique({ where: { id } });
+  if (job && job.status === 'PENDING') {
+    await prisma.jobPost.update({ where: { id }, data: { status: 'REJECTED' } });
+    
+    // Notifica o autor
+    await prisma.notification.create({
+      data: {
+        discordId: job.discordId,
+        title: '❌ Publicação Rejeitada',
+        message: `Sua postagem de ${job.type === 'vagas' ? 'Vaga' : 'Freelancer'} não foi aprovada pela moderação.`,
+      }
+    });
+  }
 }
 
 /**
@@ -174,6 +195,14 @@ export async function promoteToAdmin({ newDiscordId, promotedBy }) {
     update: {},
     create: { discordId: newDiscordId, addedBy: promotedBy },
   });
+
+  await prisma.notification.create({
+    data: {
+      discordId: newDiscordId,
+      title: '🛡️ Você foi promovido',
+      message: 'Você agora é um administrador do painel. Acesse a área de administração para moderar as publicações.',
+    }
+  });
 }
 
 /**
@@ -182,5 +211,13 @@ export async function promoteToAdmin({ newDiscordId, promotedBy }) {
 export async function demoteAdmin(discordId) {
   await prisma.admin.delete({
     where: { discordId },
+  });
+
+  await prisma.notification.create({
+    data: {
+      discordId,
+      title: '🔻 Acesso revogado',
+      message: 'Seu acesso de administrador foi removido por um Root.',
+    }
   });
 }
