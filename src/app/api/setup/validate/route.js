@@ -85,6 +85,7 @@ async function testWebhook(webhookUrl) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: 'Trampo Setup',
+        thread_name: '🔧 Teste de Configuração',
         embeds: [{
           color: 0x22c55e,
           title: '🔧 Teste de Webhook',

@@ -89,9 +89,11 @@ export default function GlobalHeader() {
             <Link href="/sobre" className={s.navLink}>Sobre</Link>
             <a
               href={BRAND.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`${s.navLink} ${s.downloadBtn}`}
-              title="Baixar Trampo (ZIP) — sempre a versão mais recente da main"
-              aria-label="Baixar Trampo"
+              title="Acessar o repositório no GitHub"
+              aria-label="Ver no GitHub"
             >
               <DownloadIcon />
               Ver no GitHub
