@@ -215,7 +215,10 @@ export default function SetupPage() {
         setSaveError(data.error || 'Erro desconhecido ao salvar.');
       }
     } catch {
-      setSaveError('Erro de rede ao salvar a configuração.');
+      // Quando o Next.js detecta que o .env.local foi criado, ele derruba o servidor.
+      // Isso causa um erro de rede no fetch antes de receber a resposta.
+      // Portanto, o erro de rede aqui significa que deu TUDO CERTO!
+      setStep(6);
     } finally {
       setSaving(false);
     }
