@@ -13,7 +13,7 @@ function isConfigured() {
   );
 }
 
-export function middleware(request) {
+export function proxy(request) {
   const { pathname } = request.nextUrl;
 
   // CVE-6 fix: Rotas de setup SÓ são liberadas sem autenticação quando o
