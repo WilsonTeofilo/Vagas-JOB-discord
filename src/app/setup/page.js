@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import s from './setup.module.css';
 
 // ─── Ícones leves (inline SVG) ────────────────────────────────────────────
@@ -175,13 +175,22 @@ export default function SetupPage() {
     } catch { /* ignorar */ }
   }, []);
 
+  // Auto-testa o NEXTAUTH_URL quando o usuário chega no step 4
+  // porque o campo já está pré-preenchido com http://localhost:3000
+  useEffect(() => {
+    if (step === 4 && !validations.NEXTAUTH_URL) {
+      testField('NEXTAUTH_URL', fields.NEXTAUTH_URL);
+    }
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const isStepValid = () => {
     const ok = k => validations[k]?.status === 'ok';
     switch (step) {
       case 1: return ok('DATABASE_URL');
       case 2: return ok('DISCORD_WEBHOOK_URL_VAGAS') && ok('DISCORD_WEBHOOK_URL_FREELANCERS');
       case 3: return ok('DISCORD_CLIENT_ID') && ok('DISCORD_CLIENT_SECRET');
-      case 4: return ok('NEXTAUTH_SECRET') && ok('NEXTAUTH_URL');
+      // Step 4: secret deve estar ok, URL pode estar testando ainda (auto-testada pelo useEffect)
+      case 4: return ok('NEXTAUTH_SECRET') && (ok('NEXTAUTH_URL') || validations.NEXTAUTH_URL?.status === 'testing');
       case 5: return ok('NEXT_PUBLIC_DISCORD_SERVER_URL');
       default: return true;
     }
@@ -540,18 +549,18 @@ export default function SetupPage() {
               </p>
 
               <div className={s.doneCmd}>
-                <div className={s.doneCmdLabel}>1. Reinicie o servidor</div>
+                <div className={s.doneCmdLabel}>1. Crie as tabelas no banco (apenas na primeira vez)</div>
                 <div className={s.codeBlock}>
-                  <span className={s.codeValue}>npm run dev</span>
-                  <CopyBtn text="npm run dev" id="cmd1" copied={copied} onCopy={copyText} />
+                  <span className={s.codeValue}>npx prisma db push</span>
+                  <CopyBtn text="npx prisma db push" id="cmd2" copied={copied} onCopy={copyText} />
                 </div>
               </div>
 
               <div className={s.doneCmd}>
-                <div className={s.doneCmdLabel}>2. Crie as tabelas no banco (apenas na primeira vez)</div>
+                <div className={s.doneCmdLabel}>2. Inicie o servidor</div>
                 <div className={s.codeBlock}>
-                  <span className={s.codeValue}>npx prisma db push</span>
-                  <CopyBtn text="npx prisma db push" id="cmd2" copied={copied} onCopy={copyText} />
+                  <span className={s.codeValue}>npm run dev</span>
+                  <CopyBtn text="npm run dev" id="cmd1" copied={copied} onCopy={copyText} />
                 </div>
               </div>
 

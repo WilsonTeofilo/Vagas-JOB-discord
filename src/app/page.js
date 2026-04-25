@@ -80,8 +80,6 @@ export default async function LandingPage() {
           Grátis para sempre · Open Source · OAuth2 Discord
         </p>
 
-        {/* Glow decorativo */}
-        <div className={s.heroGlow} aria-hidden="true" />
       </section>
 
       {/* ── Features ─────────────────────────────────────────────── */}

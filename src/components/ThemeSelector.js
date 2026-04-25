@@ -1,10 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function ThemeSelector() {
-  const router = useRouter();
   const [themes, setThemes] = useState([]);
   const [userPref, setUserPref] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,6 +27,7 @@ export default function ThemeSelector() {
   }, []);
 
   const handleSelect = async (themeId) => {
+    if (themeId === userPref) return; // sem mudança, não recarrega
     setUserPref(themeId);
     try {
       await fetch('/api/theme/preference', {
@@ -36,8 +35,9 @@ export default function ThemeSelector() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ themeId })
       });
-      // Recarrega a página para o servidor (ThemeProvider) injetar o novo CSS no <head>
-      router.refresh();
+      // ThemeProvider é SSR — router.refresh() não reinjeta o CSS.
+      // Hard reload garante que o novo <style> seja servido pelo servidor.
+      window.location.reload();
     } catch (err) {
       console.error('Erro ao salvar tema:', err);
     }
@@ -61,7 +61,7 @@ export default function ThemeSelector() {
               display: 'flex', alignItems: 'center', gap: '0.25rem',
               padding: '0.2rem 0.5rem', background: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
               border: `1px solid ${isActive ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)'}`,
-              borderRadius: '99px', fontSize: '0.7rem', color: isActive ? '#fff' : 'var(--text-muted)',
+              borderRadius: '99px', fontSize: '0.7rem', color: isActive ? 'var(--text)' : 'var(--text-muted)',
               cursor: 'pointer', transition: 'all 0.15s',
               maxWidth: '80px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'
             }}
