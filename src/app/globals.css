@@ -57,7 +57,7 @@ body::before {
     linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
   background-size: 48px 48px;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 body::after {
@@ -69,7 +69,7 @@ body::after {
     radial-gradient(ellipse 50% 40% at var(--glow-pos-x-2) var(--glow-pos-y-2), var(--glow-color-2) 0%, transparent 70%);
   opacity: var(--glow-opacity);
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* ─── Typography ─────────────────────────────────── */

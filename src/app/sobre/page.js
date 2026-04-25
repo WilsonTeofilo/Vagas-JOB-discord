@@ -149,7 +149,7 @@ export default function SobrePage() {
               href={BRAND.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={s.ctaGhost}
+              className={s.ctaPrimary}
             >
               Ver no GitHub →
             </a>

@@ -108,7 +108,7 @@ export default async function LandingPage() {
           <Link href="/publicar" className={s.ctaPrimary}>
             Publicar uma Oportunidade
           </Link>
-          <Link href="/sobre" className={s.ctaGhost}>
+          <Link href="/sobre" className={s.ctaPrimary}>
             Saiba Mais →
           </Link>
         </div>
