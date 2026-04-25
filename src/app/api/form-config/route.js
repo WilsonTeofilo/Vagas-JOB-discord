@@ -6,6 +6,8 @@
 import { NextResponse } from 'next/server';
 import { getAllFormConfig } from '../../../services/form-config.service';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const config = await getAllFormConfig();
