@@ -36,7 +36,19 @@ export async function POST(request) {
   if (!imageUrl || !targetUrl) {
     return NextResponse.json({ error: 'imageUrl e targetUrl são obrigatórios.' }, { status: 400 });
   }
-  // Bloqueia URLs de aposta/adult — proteção básica
+
+  // Valida protocolo — apenas https:// é aceito (bloqueia javascript:, data:, etc.)
+  const isSafeHttpsUrl = (u) => {
+    try { return new URL(u).protocol === 'https:'; } catch { return false; }
+  };
+  if (!isSafeHttpsUrl(targetUrl)) {
+    return NextResponse.json({ error: 'targetUrl deve ser uma URL https:// válida.' }, { status: 400 });
+  }
+  if (!isSafeHttpsUrl(imageUrl)) {
+    return NextResponse.json({ error: 'imageUrl deve ser uma URL https:// válida.' }, { status: 400 });
+  }
+
+  // Bloqueia URLs de aposta/adult — proteção básica de conteúdo
   const blocked = ['bet', 'casino', 'porn', 'sex', 'adult', 'xxx'];
   if (blocked.some(w => targetUrl.toLowerCase().includes(w) || imageUrl.toLowerCase().includes(w))) {
     return NextResponse.json({ error: 'URL bloqueada pela política de anúncios.' }, { status: 400 });

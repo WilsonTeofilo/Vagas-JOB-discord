@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  padding: 2rem 1.5rem 4rem;
+  padding: calc(64px + 2rem) 1.5rem 4rem;
   position: relative;
   z-index: 1;
   max-width: 1400px;
@@ -72,7 +72,7 @@
   border-radius: 1.125rem;
   overflow: hidden;
   position: sticky;
-  top: 1.5rem;
+  top: calc(64px + 1rem);
 }
 
 /* ─── Tabs de slots ─── */

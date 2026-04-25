@@ -188,7 +188,7 @@ export default function JobForm() {
   const [activeTab, setActiveTab] = useState('vagas');
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState({ type: '', message: '' });
+  const [feedback, setFeedback] = useState({ type: '', message: '', isPending: false });
 
   const [formConfig, setFormConfig] = useState(null);
 
@@ -214,7 +214,7 @@ export default function JobForm() {
     setForm({ title: '', company: '', level: formConfig?.job_levels[0] || '', regime: formConfig?.job_regimes[0] || '', description: '', contact: '', skills: '', portfolio: '', availability: '' });
     setEducations([emptyEdu()]);
     setStep(1);
-    setFeedback({ type: '', message: '' });
+    setFeedback({ type: '', message: '', isPending: false });
   };
 
   const switchTab = (tab) => { setActiveTab(tab); resetForm(); };
@@ -295,7 +295,8 @@ export default function JobForm() {
       });
       const data = await res.json();
       if (res.ok) {
-        setFeedback({ type: 'success', message: data.message || 'Publicado com sucesso! 🎉' });
+        const isPending = data.message?.includes('aprovação') || data.message?.includes('limite');
+        setFeedback({ type: 'success', message: data.message || 'Publicado com sucesso! 🎉', isPending });
         resetForm();
       } else {
         setFeedback({ type: 'error', message: data.error || 'Erro ao publicar.' });
@@ -450,58 +451,148 @@ export default function JobForm() {
 
       {/* Feedback Modal */}
       {feedback.message && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(5px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999,
-          animation: 'fadeIn 0.2s ease-out'
-        }}>
+        <div
+          id="feedback-modal-overlay"
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999,
+            animation: 'fadeIn 0.2s ease-out', padding: '1rem',
+          }}
+          onClick={e => { if (e.target.id === 'feedback-modal-overlay') setFeedback({ type: '', message: '', isPending: false }); }}
+        >
           <div style={{
-            background: '#18181b', padding: '2.5rem 2rem', borderRadius: 'var(--r-lg)',
-            border: `1px solid ${feedback.type === 'success' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
-            maxWidth: '400px', width: '90%', textAlign: 'center',
-            boxShadow: `0 20px 40px rgba(0,0,0,0.5), 0 0 40px ${feedback.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'}`,
-            animation: 'slideUp 0.3s ease-out'
+            background: 'linear-gradient(135deg, #1c1c22 0%, #18181b 100%)',
+            padding: '2.5rem 2rem 2rem',
+            borderRadius: 'var(--r-lg)',
+            border: `1px solid ${
+              feedback.type === 'success'
+                ? feedback.isPending ? 'rgba(245, 158, 11, 0.4)' : 'rgba(16, 185, 129, 0.4)'
+                : 'rgba(239, 68, 68, 0.4)'
+            }`,
+            maxWidth: '420px', width: '100%', textAlign: 'center',
+            boxShadow: `0 24px 48px rgba(0,0,0,0.6), 0 0 60px ${
+              feedback.type === 'success'
+                ? feedback.isPending ? 'rgba(245, 158, 11, 0.08)' : 'rgba(16, 185, 129, 0.08)'
+                : 'rgba(239, 68, 68, 0.08)'
+            }`,
+            animation: 'slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            position: 'relative',
           }}>
-            <div style={{ marginBottom: '1.25rem', color: feedback.type === 'success' ? '#10b981' : '#ef4444' }}>
+
+            {/* Botão fechar (X) */}
+            <button
+              type="button"
+              id="feedback-modal-close"
+              onClick={() => setFeedback({ type: '', message: '', isPending: false })}
+              style={{
+                position: 'absolute', top: '1rem', right: '1rem',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '50%', width: '28px', height: '28px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.85rem',
+                lineHeight: 1, transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
+              aria-label="Fechar"
+            >
+              ✕
+            </button>
+
+            {/* Ícone principal */}
+            <div style={{
+              marginBottom: '1.25rem',
+              color: feedback.type === 'success'
+                ? feedback.isPending ? '#f59e0b' : '#10b981'
+                : '#ef4444',
+            }}>
               {feedback.type === 'success' ? (
-                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
+                feedback.isPending ? (
+                  /* Ícone relógio — pendente de aprovação */
+                  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto', display: 'block' }}>
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                ) : (
+                  /* Ícone check — publicado! */
+                  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto', display: 'block' }}>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                )
               ) : (
-                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
-                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                /* Ícone erro */
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto', display: 'block' }}>
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
               )}
             </div>
-            <h3 style={{ marginBottom: '0.75rem', color: '#fff', fontSize: '1.4rem', fontWeight: 600 }}>
-              {feedback.type === 'success' ? 'Deu tudo certo!' : 'Ops, ocorreu um problema'}
+
+            {/* Título */}
+            <h3 style={{ marginBottom: '0.6rem', color: '#fff', fontSize: '1.45rem', fontWeight: 700, lineHeight: 1.2 }}>
+              {feedback.type === 'success'
+                ? feedback.isPending ? 'Enviado para aprovação! ⏳' : 'Publicado com sucesso! 🎉'
+                : 'Ops, algo deu errado'}
             </h3>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', lineHeight: 1.6, fontSize: '0.95rem' }}>
+
+            {/* Mensagem da API */}
+            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: 1.65, fontSize: '0.92rem' }}>
               {feedback.message}
             </p>
-            <button type="button" className="btn-primary" style={{ width: '100%', padding: '0.8rem' }} onClick={() => setFeedback({ type: '', message: '' })}>
-              {feedback.type === 'success' ? 'Continuar' : 'Fechar e Tentar Novamente'}
-            </button>
-            {feedback.type === 'success' && process.env.NEXT_PUBLIC_DISCORD_SERVER_URL && (
-              <a
-                href={process.env.NEXT_PUBLIC_DISCORD_SERVER_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                  marginTop: '0.75rem', padding: '0.75rem', borderRadius: 'var(--r-md)',
-                  background: 'rgba(88, 101, 242, 0.12)', border: '1px solid rgba(88, 101, 242, 0.3)',
-                  color: '#7289da', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500,
-                  transition: 'background 0.2s, border-color 0.2s',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(88,101,242,0.22)'; e.currentTarget.style.borderColor = 'rgba(88,101,242,0.5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(88,101,242,0.12)'; e.currentTarget.style.borderColor = 'rgba(88,101,242,0.3)'; }}
-              >
-                <DiscordIcon />
-                🎉 Entrar na comunidade
-              </a>
+
+            {/* Bloco extra de sucesso — convite ao Discord */}
+            {feedback.type === 'success' && (
+              <div style={{
+                background: 'rgba(88, 101, 242, 0.08)',
+                border: '1px solid rgba(88, 101, 242, 0.25)',
+                borderRadius: 'var(--r-md)',
+                padding: '1rem',
+                marginBottom: '1.25rem',
+                textAlign: 'left',
+              }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
+                  {feedback.isPending
+                    ? '📋 Sua postagem ficará visível após ser revisada por um administrador da comunidade.'
+                    : '✅ Sua postagem já está visível no canal de vagas do Discord!'}
+                </p>
+                <p style={{ fontSize: '0.84rem', color: '#a5b4fc', marginBottom: '0.6rem', fontWeight: 500 }}>
+                  Ainda não faz parte da comunidade?
+                </p>
+                <a
+                  id="feedback-discord-invite"
+                  href={BRAND.discordInvite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                    padding: '0.65rem 1rem', borderRadius: 'var(--r-md)',
+                    background: 'rgba(88, 101, 242, 0.18)', border: '1px solid rgba(88, 101, 242, 0.4)',
+                    color: '#7289da', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 600,
+                    transition: 'background 0.2s, border-color 0.2s, transform 0.15s',
+                    width: '100%',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(88,101,242,0.3)'; e.currentTarget.style.borderColor = 'rgba(88,101,242,0.6)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(88,101,242,0.18)'; e.currentTarget.style.borderColor = 'rgba(88,101,242,0.4)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <DiscordIcon />
+                  Entrar no grupo do Discord →
+                </a>
+              </div>
             )}
+
+            {/* Botão principal */}
+            <button
+              type="button"
+              id="feedback-modal-action"
+              className="btn-primary"
+              style={{ width: '100%', padding: '0.85rem', fontSize: '0.95rem' }}
+              onClick={() => setFeedback({ type: '', message: '', isPending: false })}
+            >
+              {feedback.type === 'success' ? 'Publicar outra oportunidade' : '← Fechar e tentar novamente'}
+            </button>
           </div>
         </div>
       )}

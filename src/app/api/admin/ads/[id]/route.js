@@ -25,6 +25,18 @@ export async function PUT(request, { params }) {
 
   // Filtra apenas campos editáveis — evita sobrescrever id, createdAt, etc.
   const { imageUrl, targetUrl, altText, weight, active } = body;
+
+  // Valida protocolo se os campos de URL forem fornecidos
+  const isSafeHttpsUrl = (u) => {
+    try { return new URL(u).protocol === 'https:'; } catch { return false; }
+  };
+  if (imageUrl !== undefined && !isSafeHttpsUrl(imageUrl)) {
+    return NextResponse.json({ error: 'imageUrl deve ser uma URL https:// válida.' }, { status: 400 });
+  }
+  if (targetUrl !== undefined && !isSafeHttpsUrl(targetUrl)) {
+    return NextResponse.json({ error: 'targetUrl deve ser uma URL https:// válida.' }, { status: 400 });
+  }
+
   const allowedData = {};
   if (imageUrl  !== undefined) allowedData.imageUrl  = imageUrl;
   if (targetUrl !== undefined) allowedData.targetUrl = targetUrl;
@@ -37,7 +49,8 @@ export async function PUT(request, { params }) {
   }
 
   try {
-    const ad = await updateAd(params.id, allowedData);
+    const { id } = await params;
+    const ad = await updateAd(id, allowedData);
     return NextResponse.json(ad);
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
@@ -49,7 +62,8 @@ export async function DELETE(_, { params }) {
     return NextResponse.json({ error: 'Apenas o Root Admin pode remover anúncios.' }, { status: 403 });
   }
   try {
-    await deleteAd(params.id);
+    const { id } = await params;
+    await deleteAd(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

@@ -12,7 +12,8 @@ import {
 } from '../../../../services/theme.service';
 
 export async function GET(_, { params }) {
-  const slot = Number(params.slot);
+  const { slot: slotParam } = await params;
+  const slot = Number(slotParam);
   if (!slot) return NextResponse.json({ error: 'Slot inválido.' }, { status: 400 });
 
   const theme = await getThemeBySlot(slot);
@@ -27,7 +28,8 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ error: 'Apenas o Root Admin pode editar temas.' }, { status: 403 });
   }
 
-  const slot = Number(params.slot);
+  const { slot: slotParam } = await params;
+  const slot = Number(slotParam);
   if (slot < 1 || slot > 3) {
     return NextResponse.json({ error: 'Slot deve ser 1, 2 ou 3.' }, { status: 400 });
   }
@@ -51,7 +53,8 @@ export async function DELETE(_, { params }) {
     return NextResponse.json({ error: 'Apenas o Root Admin pode deletar temas.' }, { status: 403 });
   }
 
-  const slot = Number(params.slot);
+  const { slot: slotParam } = await params;
+  const slot = Number(slotParam);
   const theme = await getThemeBySlot(slot);
   if (!theme) return NextResponse.json({ error: 'Tema não encontrado.' }, { status: 404 });
 

@@ -48,6 +48,8 @@ O **Trampo** é uma aplicação web que serve como mural de oportunidades para c
 - **Sistema de Bootstrap**: o primeiro usuário a acessar o site vira Root automaticamente
 - **Bypass de Rate Limit** para admins publicarem vagas ilimitadas
 - **Editor de Temas Visuais** com preview em tempo real
+- **Editor de Opções do Formulário**: personaliza os níveis, regimes, faculdades, cursos e formações que aparecem no formulário de publicação — com tags visuais, reset para padrão e salvamento por categoria
+- **Sistema de Anúncios**: cadastro, edição e remoção de banners/links patrocinados exibidos no site, com contador de cliques
 
 ### 🎨 Sistema de Temas (Admin)
 - **3 slots de tema** salvos no banco de dados
@@ -55,6 +57,13 @@ O **Trampo** é uma aplicação web que serve como mural de oportunidades para c
 - **Preview em tempo real** via iframe sem afetar o site público
 - **Salvar mundialmente** atualiza o visual para todos os usuários instantaneamente (sem redeploy)
 - Usuários podem escolher seu tema preferido individualmente
+
+### 📢 Sistema de Anúncios
+- **Gerenciamento pelo painel admin**: crie e remova anúncios com imagem ou texto
+- **Dois formatos**: banner horizontal (topo do conteúdo) e banner flutuante (canto inferior direito)
+- **Fallback automático**: se não houver anúncio ativo, exibe um link de convite para o Discord da comunidade
+- **Contador de cliques**: rastreamento anônimo via `sendBeacon` — sem bloquear a navegação
+- **Anti-adblock**: tráfego pela própria rota `/api/ads` — sem dependência de redes externas
 
 ### 🤖 Integração Discord
 - Envio automático para **Webhooks** configurados por tipo (vagas/freelancers)
@@ -250,8 +259,10 @@ NEXTAUTH_SECRET="sua_chave_secreta_minimo_32_caracteres"
 DISCORD_CLIENT_ID="id_numerico_do_seu_app"
 DISCORD_CLIENT_SECRET="secret_do_seu_app"
 
-# ── Link da Comunidade (aparece no modal de sucesso do formulário) ──────
-NEXT_PUBLIC_DISCORD_SERVER_URL="https://discord.gg/SEU_LINK_PERMANENTE"
+# ── Link de Convite da Comunidade (opcional — usado pelo Setup Wizard) ─────
+# Configure em src/lib/brand.js → discordInvite para personalizar o link
+# exibido no modal de sucesso do formulário e na tela de login.
+# NEXT_PUBLIC_DISCORD_SERVER_URL="https://discord.gg/SEU_LINK_PERMANENTE"
 ```
 
 ### Como criar o App no Discord Developer Portal
@@ -320,17 +331,24 @@ trampo/
 │   │   │   │   ├── action/          # POST: aprovar/rejeitar vaga (admin)
 │   │   │   │   ├── promote/         # POST: promover usuário a admin (root)
 │   │   │   │   ├── demote/          # POST: remover admin (root)
-│   │   │   │   └── users/           # GET: busca de usuários com rate limit
+│   │   │   │   ├── me/              # GET: retorna dados do admin autenticado
+│   │   │   │   ├── users/           # GET: busca de usuários com rate limit
+│   │   │   │   ├── form-config/     # GET/PUT/DELETE: opções dinâmicas do formulário
+│   │   │   │   └── ads/             # GET/POST/DELETE: gerenciamento de anúncios
+│   │   │   │       └── [id]/        # DELETE: remove anúncio específico
 │   │   │   ├── theme/
 │   │   │   │   ├── [slot]/          # GET/PUT/DELETE: tema por slot (1,2,3)
 │   │   │   │   ├── [slot]/activate/ # PUT: define tema como padrão do site
 │   │   │   │   └── preference/      # GET/PUT/DELETE: preferência individual
+│   │   │   ├── ads/                 # GET: anúncio ativo (público, anti-adblock)
+│   │   │   │   └── click/           # POST: registra clique em anúncio
 │   │   │   └── setup/
 │   │   │       ├── save/            # POST: grava .env.local (bloqueado em prod)
 │   │   │       ├── validate/        # POST: testa DB/webhooks (bloqueado em prod)
 │   │   │       └── generate-secret/ # GET: gera NEXTAUTH_SECRET seguro
 │   │   ├── admin/
 │   │   │   ├── page.js             # Painel de moderação (Server Component)
+│   │   │   ├── form-config/        # Editor de opções do formulário (tags + reset)
 │   │   │   └── theme-editor/       # Editor visual de temas (Client Component)
 │   │   ├── setup/
 │   │   │   └── page.js             # Wizard de configuração (5 etapas)
@@ -339,6 +357,9 @@ trampo/
 │   │
 │   ├── components/
 │   │   ├── JobForm.js              # Formulário principal de vagas/freelas
+│   │   ├── GlobalHeader.js         # Cabeçalho global fixo com navegação
+│   │   ├── AdBanner.js             # Banner de anúncio (float e horizontal)
+│   │   ├── DonationModal.js        # Modal de apoio financeiro ao projeto
 │   │   ├── ThemeProvider.js        # Server Component: injeta CSS do tema no <head>
 │   │   ├── ThemePreviewListener.js # Client Component: recebe preview via postMessage
 │   │   ├── ThemeSelector.js        # Seletor de tema individual para usuários
@@ -349,11 +370,12 @@ trampo/
 │   ├── services/
 │   │   ├── job.service.js          # Regras de negócio: vagas, rate limit, admins
 │   │   ├── theme.service.js        # Regras de negócio: temas e preferências
+│   │   ├── form-config.service.js  # Opções do formulário (padrão + customizadas)
 │   │   └── discord.service.js      # Envio de webhooks + sanitização anti-ping
 │   │
 │   ├── lib/
 │   │   ├── prisma.js               # Singleton do Prisma Client
-│   │   ├── brand.js                # Configurações da comunidade (nome, convite)
+│   │   ├── brand.js                # Configurações da comunidade (nome, link Discord, doações)
 │   │   ├── theme-css.js            # Gerador de CSS puro (re-sanitiza tudo)
 │   │   ├── is-admin.js             # Verifica permissão de admin via banco
 │   │   └── csrf.js                 # Validação de Origin/Referer anti-CSRF
@@ -362,7 +384,7 @@ trampo/
 │   │   └── schemas.js              # Schemas Zod: vagas, freelas, moderação, admin
 │   │
 │   ├── data/
-│   │   └── education.js            # Listas de faculdades, cursos e níveis
+│   │   └── education.js            # Listas padrão de faculdades, cursos e níveis
 │   │
 │   └── proxy.js                    # Middleware: Setup Wizard ↔ App lockdown
 ```

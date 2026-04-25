@@ -12,7 +12,8 @@ export async function PUT(_, { params }) {
     return NextResponse.json({ error: 'Apenas o Root Admin pode definir o tema padrão.' }, { status: 403 });
   }
 
-  const slot = Number(params.slot);
+  const { slot: slotParam } = await params;
+  const slot = Number(slotParam);
   const theme = await getThemeBySlot(slot);
   if (!theme) return NextResponse.json({ error: 'Tema não encontrado.' }, { status: 404 });
 
