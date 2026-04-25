@@ -196,9 +196,14 @@ Admin salva tema → Banco atualizado → Próximo request de qualquer usuário 
 ## 🧙 Método 1 — Setup Wizard (recomendado)
 > Ideal para quem quer configurar tudo pelo navegador, com guias explicativos em cada etapa.
 
-### Passo Zero: Fork no GitHub 🌟
-Antes de começar, faça o **Fork** deste repositório para o seu próprio GitHub clicando no botão **"Fork"** no canto superior direito da página. 
-**Por que isso é importante?** O Fork permite que você hospede o projeto na Vercel e receba futuras atualizações do criador (botão *Sync Fork*) com um clique!
+### Passo Zero: Criar Conta e Fazer o Fork no GitHub 🚨 (OBRIGATÓRIO)
+Se você não tem experiência com programação, preste muita atenção: **NÃO pule esta etapa!** Se você pular, o seu site vai quebrar na hora de colocar no ar (na Vercel).
+
+1. Crie uma conta gratuita no [GitHub](https://github.com/).
+2. Volte nesta página (do projeto Trampo) e clique no botão **"Fork"** no canto superior direito.
+3. Isso vai criar uma cópia exata do projeto na **sua** conta do GitHub.
+
+> **Por que isso é obrigatório?** O Fork é a única forma de você conseguir hospedar o projeto depois na Vercel e receber futuras atualizações de segurança e recursos (usando o botão *Sync Fork*) sem precisar entender de código.
 
 ABRA O TERMINAL
 ```bash
