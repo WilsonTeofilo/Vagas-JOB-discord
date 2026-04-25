@@ -293,11 +293,11 @@ export default function SetupPage() {
               </p>
 
               <Hint title="Como criar seu banco no Neon DB" defaultOpen>
-                <HintStep n="1">Acesse <strong>neon.tech</strong> e crie uma conta gratuita.</HintStep>
-                <HintStep n="2">Clique em <strong>"New Project"</strong>, dê um nome e crie o projeto (não ative o Neon Auth).</HintStep>
-                <HintStep n="3">No painel principal do projeto, localize o botão branco <strong>Connect</strong> (na parte superior ou no meio da tela).</HintStep>
-                <HintStep n="4">Na caixa <strong>"Connection string"</strong>, clique no ícone de <strong>Mostrar Senha</strong> (olho) para revelar a senha ou simplesmente use o botão de <strong>Copiar</strong> ao lado do texto para não copiar a senha com asteriscos e dar erro.</HintStep>
-                <HintStep n="5">A URL começa com <code style={{ color: '#818cf8' }}>postgresql://</code></HintStep>
+                <HintStep n="1">Acesse <strong>neon.tech</strong>, crie uma conta gratuita, coloque o nome da sua <strong>Organization</strong> e clique em Next.</HintStep>
+                <HintStep n="2">Coloque o nome do projeto, verifique se o <strong>Neon Auth está DESLIGADO</strong>, escolha a sua região (ex: São Paulo) e clique em <strong>Create Project</strong>.</HintStep>
+                <HintStep n="3">Na tela seguinte, você pode ir direto na área <strong>Connection string</strong>, clicar em <strong>Show password</strong> (olho) e depois no botão <strong>Copy snippet</strong>.</HintStep>
+                <HintStep n="4"><strong>OU</strong> clique em <strong>Go to project</strong>, depois no botão branco <strong>Connect</strong>, vá em "Connect to your database", ative o <strong>Show password</strong> e clique em <strong>Copy snippet</strong>.</HintStep>
+                <HintStep n="5">A URL copiada sempre começa com <code style={{ color: '#818cf8' }}>postgresql://</code></HintStep>
                 <a href="https://neon.tech" target="_blank" rel="noopener noreferrer" className={s.hintLink}>
                   <IconExternal /> Abrir Neon DB
                 </a>

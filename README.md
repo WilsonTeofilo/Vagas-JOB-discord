@@ -210,24 +210,16 @@ copie do seu terminal o endereço localhost, ex: `http://localhost:3000` — ap�
 
 | Etapa | O que configura |
 |-------|----------------|
-| 1️⃣ Banco de Dados | URL de conexão PostgreSQL (Neon DB). **Nota:** Crie o projeto, clique no botão "Connect" e copie a "Connection string" (clique em show password e em seguida vá no ícone de "Copy" para vir a senha junto, se copiar o texto com asteriscos vai dar erro). Não ative o "Neon Auth". |
+| 1️⃣ Banco de Dados | URL de conexão PostgreSQL (Neon DB). **Nota:** Ao criar a conta, coloque o nome da Organization. No projeto, deixe o "Neon Auth" desligado e escolha sua região (ex: São Paulo). Após criar, você pode copiar a "Connection string" revelando a senha com "Show password" e clicando em "Copy snippet". Ou clique em "Go to project", vá no botão "Connect", habilite "Show password" e copie o snippet. |
 | 2️⃣ Webhooks Discord | URLs dos canais de vagas e freelancers |
 | 3️⃣ App Discord | Client ID e Client Secret para OAuth2. Acesse a aba "OAuth2", crie um Redirect, cole a URL exata do seu site e salve. |
 | 4️⃣ Autenticação | NEXTAUTH_SECRET (pode gerar automaticamente) e URL do site |
 | 5️⃣ Comunidade | Link permanente de convite do seu servidor |
 
-Ao concluir o Wizard, o `.env.local` é gerado e a aplicação vai dar uma leve desconectada (o servidor encerrará sozinho).
+Ao concluir, o `.env.local` é gerado automaticamente, as tabelas são criadas no seu banco de dados, e o servidor encerra sozinho.
 
-**Seu próximo passo é sincronizar o banco de dados:**
-
-1. Vá para o terminal onde o servidor estava rodando. Se ele não parou, pressione `CTRL+C`.
-2. Rode o comando abaixo para criar as tabelas no seu banco Neon DB:
 ```bash
-npx prisma db push
-```
-
-3. Depois que o banco for sincronizado com sucesso, inicie o servidor novamente:
-```bash
+# 6. Inicie novamente o servidor para aplicar as configurações
 npm run dev
 ```
 
