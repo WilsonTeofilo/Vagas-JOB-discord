@@ -297,34 +297,47 @@ npm run dev
 
 ---
 
-## 🚀 Deploy na Vercel
+## 🚀 Hospedando na Vercel (Deploy)
 
-### Passo a Passo
+Se você já seguiu os passos de instalação, usou o Setup Wizard e tem o seu arquivo `.env.local` pronto e funcionando no localhost, colocar o site no ar é muito simples. 
+**Atenção:** Você **não precisa** rodar `npx prisma db push` de novo, pois o seu banco Neon DB já foi criado e está na nuvem! A Vercel vai apenas se conectar a ele.
 
-1. **Fork** este repositório no GitHub
-2. Acesse [vercel.com](https://vercel.com) → **New Project** → importe seu fork
-3. Na seção **Environment Variables**, adicione todas as variáveis do `.env.local` (sem as aspas)
-4. Em `NEXTAUTH_URL`, coloque a URL final da sua aplicação: `https://trampo-seu-projeto.vercel.app`
-5. No Discord Developer Portal, adicione essa URL de redirect: `https://trampo-seu-projeto.vercel.app/api/auth/callback/discord`
-6. Clique em **Deploy**
+### Passo a Passo (Via GitHub — Recomendado para Deploy Automático)
 
-### Após o Primeiro Deploy
+A melhor forma de hospedar é colocar a sua pasta local (já testada) no seu próprio GitHub. Assim, toda vez que tiver uma atualização, a Vercel atualiza o site sozinha.
 
-```bash
-# Execute remotamente pelo CLI da Vercel (ou via Vercel dashboard → Functions)
-# Para criar as tabelas no banco de produção:
-npx prisma db push
-```
+1. **Suba seu projeto pro GitHub:**
+   Crie um repositório vazio no seu GitHub. No terminal da sua pasta local, rode:
+   ```bash
+   git remote set-url origin https://github.com/SEU_USUARIO/NOME_DO_SEU_REPO.git
+   git push -u origin main
+   ```
+2. **Importe na Vercel:**
+   Acesse [vercel.com](https://vercel.com) → **New Project** → Importe esse seu novo repositório do GitHub.
+3. **Configure as Variáveis:**
+   Na tela de importação da Vercel, abra a seção **Environment Variables**. Abra o seu arquivo `.env.local` no bloco de notas do seu PC, copie **todo o conteúdo** e cole no primeiro campo da Vercel. Ela vai preencher todas as chaves automaticamente!
+4. **Corrija a URL Final:**
+   Ainda nas variáveis, altere o valor de `NEXTAUTH_URL` de `http://localhost:3000` para a URL que a Vercel vai gerar para você (ex: `https://meu-trampo-discord.vercel.app`).
+5. **Clique em Deploy.**
 
-> **📌 Importante**: O `NEXTAUTH_URL` **deve ser a URL exata** onde o site está hospedado. Se usar domínio personalizado, use o domínio final.
+### Passo Final: Atualizar o Discord
+
+Agora que seu site tem um link oficial na internet, você precisa avisar o Discord:
+1. Acesse o [Discord Developer Portal](https://discord.com/developers/applications).
+2. Vá em **OAuth2**.
+3. Adicione um novo **Redirect URI** com o seu link oficial: 
+   `https://meu-trampo-discord.vercel.app/api/auth/callback/discord`
+   *(Não esqueça de Salvar)*
+
+> 📌 **Pronto!** O site já está no ar. Como a Vercel está lendo o mesmo banco de dados que você usou no localhost, todos os temas, vagas e permissões de Admin que você configurou já estarão funcionando perfeitamente na versão oficial.
 
 ### Redeploy Seguro
 
-Ao fazer um novo deploy (após atualizar o código), **nada quebra**:
-- O banco de dados continua intacto
+Ao atualizar o código no futuro (dando um simples `git push`), **nada quebra**:
+- O banco de dados continua intacto na Neon DB
 - Os temas visuais vivem no banco — não são sobrescritos
-- O `.env` da Vercel é preservado entre deploys
-- O Setup Wizard fica bloqueado automaticamente (variáveis já presentes)
+- As variáveis (incluindo as de webhook) ficam seguras no painel da Vercel
+- O Setup Wizard fica bloqueado na URL pública, impedindo intrusos
 
 ---
 
