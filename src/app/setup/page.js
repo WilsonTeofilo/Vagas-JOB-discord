@@ -528,7 +528,10 @@ export default function SetupPage() {
               />
 
               <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.3)', borderRadius: '8px', fontSize: '0.9rem', color: '#fef08a' }}>
-                <strong>⚠️ Aviso importante:</strong> Ao clicar em concluir, o sistema criará o banco de dados e o servidor será encerrado sozinho. Não se assuste se o site parecer que "caiu". Após concluir, volte no seu terminal e inicie o site novamente com <code style={{ color: '#fff', backgroundColor: 'rgba(0,0,0,0.3)', padding: '2px 4px', borderRadius: '4px' }}>npm run dev</code>.
+                <strong>⚠️ AVISO OBRIGATÓRIO:</strong> Ao clicar em concluir, a aplicação vai gravar as configurações e o servidor <strong>será encerrado sozinho</strong>. Não se assuste se o site "cair". Quando isso acontecer, volte no terminal e rode <strong>exatamente estes dois comandos</strong> na ordem:
+                <br /><br />
+                <code style={{ color: '#fff', backgroundColor: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '4px', display: 'block', marginBottom: '8px', fontFamily: 'monospace' }}>npx prisma db push</code>
+                <code style={{ color: '#fff', backgroundColor: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '4px', display: 'block', fontFamily: 'monospace' }}>npm run dev</code>
               </div>
 
               {saveError && (
