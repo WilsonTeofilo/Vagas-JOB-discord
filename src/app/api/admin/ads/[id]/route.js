@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import { isRootAdmin } from '../../../../../services/job.service';
 import { updateAd, deleteAd } from '../../../../../services/ads.service';
+import { verifyCsrf } from '../../../../../lib/csrf';
 
 async function requireRoot() {
   const session = await getServerSession(authOptions);
@@ -16,6 +17,7 @@ async function requireRoot() {
 }
 
 export async function PUT(request, { params }) {
+  if (!verifyCsrf(request)) return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
   if (!await requireRoot()) {
     return NextResponse.json({ error: 'Apenas o Root Admin pode editar anúncios.' }, { status: 403 });
   }
@@ -57,7 +59,8 @@ export async function PUT(request, { params }) {
   }
 }
 
-export async function DELETE(_, { params }) {
+export async function DELETE(request, { params }) {
+  if (!verifyCsrf(request)) return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
   if (!await requireRoot()) {
     return NextResponse.json({ error: 'Apenas o Root Admin pode remover anúncios.' }, { status: 403 });
   }

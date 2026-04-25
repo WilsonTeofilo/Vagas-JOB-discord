@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useSession, signIn, signOut } from "next-auth/react";
 import styles from "../app/page.module.css";
 import { BRAND } from "../lib/brand";
@@ -214,10 +215,13 @@ export default function JobForm() {
     setForm({ title: '', company: '', level: formConfig?.job_levels[0] || '', regime: formConfig?.job_regimes[0] || '', description: '', contact: '', skills: '', portfolio: '', availability: '' });
     setEducations([emptyEdu()]);
     setStep(1);
-    setFeedback({ type: '', message: '', isPending: false });
   };
 
-  const switchTab = (tab) => { setActiveTab(tab); resetForm(); };
+  const switchTab = (tab) => { 
+    setActiveTab(tab); 
+    resetForm(); 
+    setFeedback({ type: '', message: '', isPending: false });
+  };
   const set = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const addEducation = () => {
@@ -450,13 +454,13 @@ export default function JobForm() {
       </p>
 
       {/* Feedback Modal */}
-      {feedback.message && (
+      {feedback.message && typeof window !== 'undefined' && createPortal(
         <div
           id="feedback-modal-overlay"
           style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
             backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999,
             animation: 'fadeIn 0.2s ease-out', padding: '1rem',
           }}
           onClick={e => { if (e.target.id === 'feedback-modal-overlay') setFeedback({ type: '', message: '', isPending: false }); }}
@@ -594,7 +598,8 @@ export default function JobForm() {
               {feedback.type === 'success' ? 'Publicar outra oportunidade' : '← Fechar e tentar novamente'}
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Form */}

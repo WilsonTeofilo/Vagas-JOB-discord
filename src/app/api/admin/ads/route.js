@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { isAdmin, isRootAdmin } from '../../../../services/job.service';
 import { listAds, createAd } from '../../../../services/ads.service';
+import { verifyCsrf } from '../../../../lib/csrf';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -23,6 +24,10 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  if (!verifyCsrf(request)) {
+    return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
+  }
+
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || !await isRootAdmin(session.user.id)) {
     return NextResponse.json({ error: 'Apenas o Root Admin pode criar anúncios.' }, { status: 403 });

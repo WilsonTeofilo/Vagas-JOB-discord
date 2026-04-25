@@ -37,8 +37,14 @@ async function checkFreelaLimit(discordId) {
   if (recent) {
     const nextAvailable = new Date(recent.createdAt.getTime() + FREELA_LIMITE_DIAS * 24 * 60 * 60 * 1000);
     const diasRestantes = Math.ceil((nextAvailable - Date.now()) / (1000 * 60 * 60 * 24));
+    
+    // Formata a data: ex: 25/05/2026
+    const dataFormatada = nextAvailable.toLocaleDateString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+
     throw new RateLimitError(
-      `Você já publicou seu perfil recentemente. Aguarde ${diasRestantes} dia(s) para postar novamente.`
+      `Você já ofereceu seus serviços recentemente. O cooldown zera dia ${dataFormatada} (faltam ${diasRestantes} dia${diasRestantes > 1 ? 's' : ''}).`
     );
   }
 }
@@ -73,14 +79,14 @@ export async function createJobPost({ body, discordId }) {
   const isVaga = body.type === 'vagas';
   const userIsAdmin = await isAdmin(discordId);
 
-  // Rate limiting (Freelas apply even for admins, Vagas bypass for admins)
-  if (!isVaga) {
-    await checkFreelaLimit(discordId);
-  }
-  
   let isPending = false;
-  if (isVaga && !userIsAdmin) {
-    isPending = await checkVagaLimit(discordId);
+  
+  if (!userIsAdmin) {
+    if (!isVaga) {
+      await checkFreelaLimit(discordId);
+    } else {
+      isPending = await checkVagaLimit(discordId);
+    }
   }
 
   const status = isPending ? 'PENDING' : 'APPROVED';

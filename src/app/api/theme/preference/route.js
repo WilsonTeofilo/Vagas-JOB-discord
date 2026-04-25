@@ -9,6 +9,7 @@ import {
   setUserThemePreference,
   clearUserThemePreference,
 } from '../../../../services/theme.service';
+import { verifyCsrf } from '../../../../lib/csrf';
 import { revalidatePath } from 'next/cache';
 
 // CVE-3 fix: cuid tem formato específico — rejeita qualquer outra coisa
@@ -28,6 +29,7 @@ export async function GET() {
 }
 
 export async function PUT(request) {
+  if (!verifyCsrf(request)) return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'Não autenticado.' }, { status: 401 });
 
@@ -53,7 +55,8 @@ export async function PUT(request) {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(request) {
+  if (!verifyCsrf(request)) return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'Não autenticado.' }, { status: 401 });
 

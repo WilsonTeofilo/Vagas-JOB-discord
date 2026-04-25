@@ -72,9 +72,11 @@ O **Trampo** é uma aplicação web que serve como mural de oportunidades para c
 - Remoção de menções injetadas `<@userId>` e links de canal `<#channelId>`
 
 ### 🚦 Anti-Spam e Rate Limits
-- Máximo de **3 vagas diretas por mês** — excedente vai para moderação
-- **30 dias de cooldown** entre publicações de perfil freelancer
-- Rate limit de **20 buscas por minuto** no painel de moderação
+- Máximo de **3 vagas diretas por mês** para usuários comuns — excedente vai para moderação.
+- **30 dias de cooldown** entre publicações de perfil freelancer para usuários comuns.
+- **Administradores não possuem cooldown** e podem publicar ilimitadamente, contornando a moderação.
+- Rate limit de **20 buscas por minuto** no painel de moderação (por IP).
+- **Anti-ping** (no Discord): `@everyone`, `@here` e menções de usuário são sanitizados antes do envio.
 
 ---
 
@@ -93,7 +95,7 @@ O **Trampo** é uma aplicação web que serve como mural de oportunidades para c
 │  │  AdminPage      │  │  /api/theme/*  /api/auth/*       │  │
 │  └─────────────────┘  └──────────────────────────────────┘  │
 │  ┌─────────────────────────────────────────────────────────┐ │
-│  │           proxy.js (Next.js Middleware)                  │ │
+│  │           middleware.js (Next.js Middleware)             │ │
 │  │   Setup Wizard ↔ App Router ↔ Setup API lockdown        │ │
 │  └─────────────────────────────────────────────────────────┘ │
 └──────────┬──────────────────────────┬────────────────────────┘
@@ -145,7 +147,7 @@ O endpoint `/api/setup/validate` — que testa conexões de banco de dados — b
 Webhooks só são aceitos se o domínio for exatamente `discord.com`.
 
 ### 🔒 Lockdown do Setup em Produção
-Uma vez que o sistema está configurado (`DATABASE_URL` + `NEXTAUTH_SECRET` presentes), o `proxy.js` bloqueia **toda** a rota `/api/setup/*` com 403. O wizard de configuração literalmente desaparece em produção — ninguém consegue sobrescrever seu `.env` remotamente.
+Uma vez que o sistema está configurado (`DATABASE_URL` + `NEXTAUTH_SECRET` presentes), o `middleware.js` bloqueia **toda** a rota `/api/setup/*` com 403. O wizard de configuração literalmente desaparece em produção — ninguém consegue sobrescrever seu `.env` remotamente.
 
 ### 💉 Proteção contra CSS Injection
 O editor de temas salva configurações no banco de dados. Na hora de gerar o CSS:
@@ -386,7 +388,7 @@ trampo/
 │   ├── data/
 │   │   └── education.js            # Listas padrão de faculdades, cursos e níveis
 │   │
-│   └── proxy.js                    # Middleware: Setup Wizard ↔ App lockdown
+│   └── middleware.js               # Middleware: Setup Wizard ↔ App lockdown
 ```
 
 ---

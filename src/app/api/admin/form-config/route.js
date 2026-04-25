@@ -14,6 +14,7 @@ import {
   resetFormConfigKey,
   FORM_CONFIG_KEYS,
 } from '../../../../services/form-config.service';
+import { verifyCsrf } from '../../../../lib/csrf';
 
 async function requireAdmin(request) {
   const session = await getServerSession(authOptions);
@@ -36,6 +37,7 @@ export async function GET(request) {
 }
 
 export async function PUT(request) {
+  if (!verifyCsrf(request)) return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
   if (!await requireAdmin(request)) {
     return NextResponse.json({ error: 'Acesso negado.' }, { status: 403 });
   }
@@ -59,6 +61,7 @@ export async function PUT(request) {
 }
 
 export async function DELETE(request) {
+  if (!verifyCsrf(request)) return NextResponse.json({ error: 'CSRF token inválido.' }, { status: 403 });
   if (!await requireAdmin(request)) {
     return NextResponse.json({ error: 'Acesso negado.' }, { status: 403 });
   }

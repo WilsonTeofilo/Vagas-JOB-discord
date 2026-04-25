@@ -1,5 +1,6 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
+import { verifyCsrf } from '../../../../lib/csrf';
 
 const REQUIRED = [
   'DATABASE_URL',
@@ -19,6 +20,10 @@ const REQUIRED = [
  * Em produção, o proxy.js já bloqueia /api/setup/* com 403.
  */
 export async function POST(request) {
+  if (!verifyCsrf(request)) {
+    return Response.json({ error: 'CSRF token inválido.' }, { status: 403 });
+  }
+
   // Bloqueio primário: se já configurado, rejeita completamente
   if (
     process.env.DATABASE_URL &&

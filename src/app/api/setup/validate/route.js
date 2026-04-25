@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Client } from 'pg';
+import { verifyCsrf } from '../../../../lib/csrf';
 
 // ── CORREÇÃO CVE-2: SSRF — Bloqueia IPs privados/reservados ─────────────────
 // Impede que o servidor faça conexões para: 169.254.x.x (AWS metadata),
@@ -111,6 +112,10 @@ async function testWebhook(webhookUrl) {
 }
 
 export async function POST(request) {
+  if (!verifyCsrf(request)) {
+    return NextResponse.json({ ok: false, error: 'CSRF token inválido.' }, { status: 403 });
+  }
+
   // CVE-6: Bloqueia validate em sistemas já configurados
   if (isAlreadyConfigured()) {
     return NextResponse.json({ ok: false, error: 'Sistema já configurado.' }, { status: 403 });
