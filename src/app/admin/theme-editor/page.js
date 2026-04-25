@@ -20,6 +20,8 @@ const DEFAULT_CONFIG = {
   bgGifUrl:    '',
   bgBlur:      0,
   showGrid:    true,
+  gridColor:   '#ffffff',
+  gridOpacity: 0.025,
   glowOpacity: 1,
   glowColor1:  '#dc2626',
   glowColor2:  '#b91c1c',
@@ -40,6 +42,8 @@ function configToApiPayload(name, config) {
       bgGifUrl: config.bgGifUrl || null,
       bgBlur: Number(config.bgBlur),
       showGrid: config.showGrid,
+      gridColor: config.gridColor || '#ffffff',
+      gridOpacity: Number(config.gridOpacity),
       glowOpacity: Number(config.glowOpacity),
       glowColor1: config.glowColor1,
       glowColor2: config.glowColor2,
@@ -149,6 +153,8 @@ export default function ThemeEditorPage() {
             bgGifUrl: c.bgGifUrl || '',
             bgBlur: c.bgBlur ?? 0,
             showGrid: c.showGrid !== false,
+            gridColor: c.gridColor || '#ffffff',
+            gridOpacity: c.gridOpacity ?? 0.025,
             glowOpacity: c.glowOpacity ?? 1,
             glowColor1: c.glowColor1 || DEFAULT_CONFIG.glowColor1,
             glowColor2: c.glowColor2 || DEFAULT_CONFIG.glowColor2,
@@ -219,6 +225,10 @@ export default function ThemeEditorPage() {
       setSavedConfigs(prev => ({ ...prev, [activeSlot]: { name, config } }));
       setSlots(prev => ({ ...prev, [activeSlot]: data }));
       showToast('✅ Tema salvo com sucesso!', 'success');
+      
+      // Auto-reload para aplicar o tema em toda a interface sem precisar de F5 manual
+      setTimeout(() => window.location.reload(), 1000);
+      
     } catch (err) {
       showToast(`❌ ${err.message}`, 'error');
     } finally {
@@ -238,6 +248,10 @@ export default function ThemeEditorPage() {
       if (!res.ok) throw new Error('Erro ao ativar tema.');
       setDefaultSlot(activeSlot);
       showToast('🎨 Tema definido como padrão do site!', 'success');
+      
+      // Auto-reload para recarregar o layout root com o novo tema
+      setTimeout(() => window.location.reload(), 1000);
+      
     } catch (err) {
       showToast(`❌ ${err.message}`, 'error');
     } finally {
@@ -374,9 +388,16 @@ export default function ThemeEditorPage() {
 
             {/* Efeitos visuais */}
             <div className={s.section}>
-              <div className={s.sectionTitle}>Efeitos Visuais</div>
-              <Toggle label="Linhas de grade no fundo" checked={config.showGrid}
+              <div className={s.sectionTitle}>Efeitos Visuais (Grade de Fundo)</div>
+              <Toggle label="Mostrar linhas de grade" checked={config.showGrid}
                 onChange={v => setField('showGrid', v)} />
+              {config.showGrid && (
+                <>
+                  <ColorRow label="Cor da grade" value={config.gridColor} onChange={v => setField('gridColor', v)} />
+                  <SliderRow label="Opacidade da grade" value={config.gridOpacity} min={0} max={0.2} step={0.005}
+                    onChange={v => setField('gridOpacity', v)} />
+                </>
+              )}
             </div>
 
             {/* Gradiente */}

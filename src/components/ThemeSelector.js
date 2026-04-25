@@ -46,7 +46,7 @@ export default function ThemeSelector() {
   if (loading || themes.length === 0) return null;
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
       <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600, marginRight: '0.25rem' }}>Tema:</span>
       {themes.map(t => {
         const isActive = userPref === t.id || (!userPref && t.isDefault);

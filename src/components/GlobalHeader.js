@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { BRAND } from '../lib/brand';
 import DonationModal from './DonationModal';
+import ThemeSelector from './ThemeSelector';
 import s from './GlobalHeader.module.css';
 
 const DownloadIcon = () => (
@@ -153,6 +154,12 @@ export default function GlobalHeader() {
                         {isRoot ? '👑 Root Admin' : isAdmin ? '🛡️ Admin' : 'Usuário'}
                       </span>
                     </div>
+                    <div className={s.dropdownDivider} />
+
+                    <div style={{ padding: '0.5rem 1rem' }}>
+                      <ThemeSelector />
+                    </div>
+                    
                     <div className={s.dropdownDivider} />
 
                     {isAdmin && (

@@ -44,10 +44,10 @@ const ALLOWED_VAR_NAMES = new Set([
   '--discord', '--discord-h',
 ]);
 
-// Mapeia cor sólida (Hex) para um RGBA seguro com opacidade para os glows
-function hexToGlowRgba(hex, alpha) {
+// Converte hex para rgba
+function hexToRgba(hex, alpha) {
   if (typeof hex !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(hex)) {
-    return `rgba(220,38,38,${alpha})`; // fallback seguro (vermelho padrão)
+    return `rgba(220,38,38,${alpha})`; // fallback seguro
   }
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
@@ -68,12 +68,16 @@ export function buildThemeCss(theme) {
     .join('\n');
 
   const showGrid      = c.showGrid !== false;
+  const gridOpacity   = isSafeOpacity(c.gridOpacity) ? Number(c.gridOpacity) : 0.025;
+  const gridColorHex  = isSafeColor(c.gridColor) ? c.gridColor.trim() : '#ffffff';
+  const gridColorRgba = showGrid ? hexToRgba(gridColorHex, gridOpacity) : 'transparent';
+  
   const glowOpacity   = isSafeOpacity(c.glowOpacity) ? Number(c.glowOpacity) : 1;
   const primaryColor  = isSafeColor(vars['--primary']) ? vars['--primary'].trim() : '#dc2626';
-  const primaryGlow   = hexToGlowRgba(primaryColor, 0.25);
+  const primaryGlow   = hexToRgba(primaryColor, 0.25);
   
-  const glowColor1    = isSafeColor(c.glowColor1)  ? hexToGlowRgba(c.glowColor1.trim(), 0.14) : 'rgba(220,38,38,0.14)';
-  const glowColor2    = isSafeColor(c.glowColor2)  ? hexToGlowRgba(c.glowColor2.trim(), 0.10) : 'rgba(220,38,38,0.10)';
+  const glowColor1    = isSafeColor(c.glowColor1)  ? hexToRgba(c.glowColor1.trim(), 0.14) : 'rgba(220,38,38,0.14)';
+  const glowColor2    = isSafeColor(c.glowColor2)  ? hexToRgba(c.glowColor2.trim(), 0.10) : 'rgba(220,38,38,0.10)';
   const glowPosX1     = isSafePercent(c.glowPosX1) ? c.glowPosX1.trim()  : '15%';
   const glowPosY1     = isSafePercent(c.glowPosY1) ? c.glowPosY1.trim()  : '10%';
   const glowPosX2     = isSafePercent(c.glowPosX2) ? c.glowPosX2.trim()  : '85%';
@@ -81,7 +85,7 @@ export function buildThemeCss(theme) {
 
   let css = `:root {\n${safeVarLines}`;
   css += `\n  --primary-glow: ${primaryGlow};`;
-  css += `\n  --grid-color: ${showGrid ? 'rgba(255,255,255,0.025)' : 'transparent'};`;
+  css += `\n  --grid-color: ${gridColorRgba};`;
   css += `\n  --glow-opacity: ${glowOpacity};`;
   css += `\n  --glow-color-1: ${glowColor1};`;
   css += `\n  --glow-color-2: ${glowColor2};`;

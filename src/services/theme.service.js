@@ -106,6 +106,8 @@ function sanitizeConfig(config = {}) {
     bgGifUrl: config.bgType === 'gif' ? sanitizeUrl(config.bgGifUrl) : null,
     bgBlur: Math.min(20, Math.max(0, Number(config.bgBlur) || 0)),
     showGrid: config.showGrid !== false,
+    gridColor: isValidCssValue(config.gridColor) ? config.gridColor : '#ffffff',
+    gridOpacity: Math.min(0.2, Math.max(0, Number(config.gridOpacity) || 0)),
     glowOpacity: Math.min(1, Math.max(0, Number(config.glowOpacity) ?? 1)),
     glowColor1: isValidCssValue(config.glowColor1) ? config.glowColor1 : '#dc2626',
     glowColor2: isValidCssValue(config.glowColor2) ? config.glowColor2 : '#b91c1c',

@@ -175,7 +175,8 @@
   transform: translateX(-50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--glow-color-1) 0%, transparent 70%);
+  opacity: var(--glow-opacity);
   pointer-events: none;
   z-index: -1;
 }

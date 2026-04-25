@@ -12,7 +12,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--text-muted, #71717a);
+  color: var(--text);
+  opacity: 0.7;
   font-size: 0.85rem;
   text-decoration: none;
   padding: 0.4rem 0.8rem;
@@ -21,12 +22,12 @@
   border-radius: 0.5rem;
   transition: all 0.2s;
 }
-.backLink:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.backLink:hover { opacity: 1; background: rgba(255,255,255,0.06); }
 
 /* ─── Header ─── */
 .header { margin-bottom: 2rem; }
 .title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); margin-bottom: 0.4rem; }
-.title span { color: #818cf8; }
+.title span { color: var(--primary); }
 .subtitle { font-size: 0.875rem; color: #52525b; max-width: 620px; line-height: 1.6; }
 
 /* ─── Grid de cards ─── */
@@ -91,17 +92,17 @@
   align-items: center;
   gap: 0.3rem;
   padding: 0.2rem 0.5rem 0.2rem 0.65rem;
-  background: rgba(88,101,242,0.12);
-  border: 1px solid rgba(88,101,242,0.25);
+  background: var(--primary-glow);
+  border: 1px solid var(--primary);
   border-radius: 999px;
   font-size: 0.78rem;
-  color: #a5b4fc;
+  color: var(--primary);
   font-weight: 500;
 }
 .tagRemove {
   background: none;
   border: none;
-  color: #818cf8;
+  color: var(--primary);
   cursor: pointer;
   font-size: 1rem;
   line-height: 1;

@@ -3,7 +3,7 @@
 .page {
   min-height: 100vh;
   padding-top: 64px;
-  color: #fff;
+  color: var(--text);
 }
 
 /* ── Hero ── */
@@ -28,7 +28,7 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #dc2626;
+  color: var(--primary);
   margin-bottom: 1.25rem;
 }
 
@@ -37,19 +37,19 @@
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: -0.03em;
-  color: #fff;
+  color: var(--text);
   margin: 0 0 1.5rem;
 }
 
 .heroLead {
   font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-muted);
   line-height: 1.75;
   margin: 0;
   max-width: 55ch;
 }
 
-.heroLead strong { color: rgba(255, 255, 255, 0.85); }
+.heroLead strong { color: var(--text); }
 
 /* ── Portrait / GIF ── */
 .portrait {
@@ -138,7 +138,7 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #dc2626;
+  color: var(--primary);
   margin-bottom: 0.35rem;
 }
 
@@ -146,7 +146,7 @@
   display: block;
   font-size: 1.25rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text);
   margin-bottom: 0.75rem;
 }
 
@@ -189,7 +189,7 @@
 .sectionTitle {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
-  color: #fff;
+  color: var(--text);
   letter-spacing: -0.03em;
   text-align: center;
   margin: 0 0 3rem;
@@ -211,7 +211,7 @@
 
 .diffCard:hover {
   background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(220, 38, 38, 0.2);
+  border-color: var(--border-focus);
   transform: translateY(-3px);
 }
 
@@ -224,13 +224,13 @@
 .diffTitle {
   font-size: 1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text);
   margin: 0 0 0.5rem;
 }
 
 .diffText {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   line-height: 1.65;
   margin: 0;
 }
@@ -247,7 +247,7 @@
 .ctaTitle {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
   font-weight: 800;
-  color: #fff;
+  color: var(--text);
   letter-spacing: -0.03em;
   margin: 0 0 2rem;
 }
@@ -266,16 +266,16 @@
   gap: 0.5rem;
   padding: 0.85rem 1.75rem;
   border-radius: 0.75rem;
-  background: #dc2626;
+  background: var(--primary);
   color: #fff;
   font-size: 0.95rem;
   font-weight: 700;
   text-decoration: none;
   transition: background 0.2s, transform 0.15s;
-  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.35);
+  box-shadow: 0 4px 20px var(--primary-glow);
 }
 
-.ctaPrimary:hover { background: #ef4444; transform: translateY(-2px); }
+.ctaPrimary:hover { background: var(--primary-h); transform: translateY(-2px); }
 
 .ctaGhost {
   display: inline-flex;
