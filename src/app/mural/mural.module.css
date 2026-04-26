@@ -38,18 +38,18 @@
 }
 .tab {
   padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  color: #a1a1aa;
+  color: var(--text-muted);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tab:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #f4f4f5;
+  background: var(--bg-card);
+  color: var(--text);
 }
 .tab.active {
   background: var(--primary-glow);
@@ -93,7 +93,7 @@
 .filterTitle {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #e4e4e7;
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.25rem;
@@ -101,7 +101,7 @@
 .searchBox {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   color: var(--text);
@@ -116,7 +116,7 @@
 .select {
   width: 100%;
   padding: 0.65rem;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   color: var(--text);
@@ -169,7 +169,7 @@
 }
 .cardSubtitle {
   font-size: 0.9rem;
-  color: #a1a1aa;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -183,11 +183,11 @@
 }
 .badge {
   padding: 0.2rem 0.6rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 999px;
   font-size: 0.75rem;
-  color: #d4d4d8;
+  color: var(--text-muted);
 }
 .badgePrimary {
   background: var(--primary-glow);
@@ -198,7 +198,7 @@
 
 .cardDesc {
   font-size: 0.9rem;
-  color: #a1a1aa;
+  color: var(--text-muted);
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -218,7 +218,7 @@
 
 .cardDate {
   font-size: 0.75rem;
-  color: #52525b;
+  color: var(--text-muted);
 }
 
 .cardCta {
@@ -247,7 +247,7 @@
   background: var(--bg-card);
   border: 1px dashed var(--border);
   border-radius: 1rem;
-  color: #71717a;
+  color: var(--text-muted);
 }
 .emptyIcon {
   font-size: 3rem;
