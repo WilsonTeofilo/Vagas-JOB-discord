@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { moderationActionSchema } from '../../../../validations/schemas';
-import { isAdmin, approveJobPost, rejectJobPost } from '../../../../services/job.service';
+import { isAdmin, approveJobPost, rejectJobPost, deleteApprovedJob } from '../../../../services/job.service';
 import { verifyCsrf } from '../../../../lib/csrf';
 
 export async function POST(request) {
@@ -39,6 +39,7 @@ export async function POST(request) {
   try {
     if (data.action === 'APPROVE') await approveJobPost(data.id);
     if (data.action === 'REJECT')  await rejectJobPost(data.id, data.reason);
+    if (data.action === 'DELETE')  await deleteApprovedJob(data.id, data.reason);
   } catch (err) {
     console.error('[POST /api/admin/action]', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

@@ -79,7 +79,10 @@ export async function sendToDiscord({ body, discordId }) {
     ? formatVaga({ body, discordId })
     : formatFreela({ body, discordId });
 
-  const response = await fetch(webhookUrl, {
+  const urlWithWait = new URL(webhookUrl);
+  urlWithWait.searchParams.set('wait', 'true');
+
+  const response = await fetch(urlWithWait.toString(), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -94,5 +97,27 @@ export async function sendToDiscord({ body, discordId }) {
     throw new Error(`Discord rejeitou o envio: ${response.status} — ${errorText}`);
   }
 
-  return true;
+  const data = await response.json();
+  return data.id; // Retorna o messageId do Discord
+}
+
+// ─── Delete ───────────────────────────────────────────────────────────────────
+export async function deleteFromDiscord(messageId, type) {
+  if (!messageId) return;
+  const webhookUrl = type === 'vagas'
+    ? process.env.DISCORD_WEBHOOK_URL_VAGAS
+    : process.env.DISCORD_WEBHOOK_URL_FREELANCERS;
+    
+  if (!webhookUrl) return;
+
+  try {
+    const response = await fetch(`${webhookUrl}/messages/${messageId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      console.warn(`Aviso: falha ao deletar mensagem ${messageId} do Discord (${response.status})`);
+    }
+  } catch (error) {
+    console.error('Erro de rede ao deletar do Discord:', error);
+  }
 }

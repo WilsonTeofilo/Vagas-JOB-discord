@@ -6,6 +6,7 @@ import styles from "./admin.module.css";
 
 import AdminManager from "../../components/AdminManager";
 import AdminJobActions from "../../components/AdminJobActions";
+import AdminActiveJobActions from "../../components/AdminActiveJobActions";
 import Link from "next/link";
 
 export default async function AdminPage() {
@@ -43,6 +44,11 @@ export default async function AdminPage() {
 
   const pendingJobs = await prisma.jobPost.findMany({
     where: { status: "PENDING" },
+    orderBy: { createdAt: "desc" }
+  });
+
+  const activeJobs = await prisma.jobPost.findMany({
+    where: { status: "APPROVED" },
     orderBy: { createdAt: "desc" }
   });
 
@@ -126,6 +132,44 @@ export default async function AdminPage() {
                     {payload.description || payload.skills}
                   </div>
                   <AdminJobActions jobId={job.id} />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Vagas Ativas (Mural) */}
+      <div className={styles.section} style={{ marginTop: '3rem' }}>
+        <p className={styles.sectionTitle} style={{ color: 'var(--primary)' }}>
+          🌍 Vagas Ativas no Mural ({activeJobs.length})
+        </p>
+
+        {activeJobs.length === 0 ? (
+          <div className={styles.emptyState}>
+            O mural está vazio.
+          </div>
+        ) : (
+          <div className={styles.adminList}>
+            {activeJobs.map((job) => {
+              let payload;
+              try {
+                payload = JSON.parse(job.payload);
+              } catch {
+                return null;
+              }
+              return (
+                <div key={job.id} className={styles.jobCard} style={{ borderColor: 'var(--primary)', background: 'var(--bg-card)' }}>
+                  <p className={styles.jobCardTitle}>
+                    {payload.title}{payload.company ? ` — ${payload.company}` : ""}
+                  </p>
+                  <p className={styles.jobCardMeta}>
+                    por &lt;@{job.discordId}&gt; · {new Date(job.createdAt).toLocaleDateString("pt-BR")}
+                    {payload.level ? ` · ${payload.level}` : ""}
+                    {payload.regime ? ` · ${payload.regime}` : ""}
+                    {job.messageId ? ` · 🔗 ID Discord: ${job.messageId}` : " · ⚠️ Sem link com Discord"}
+                  </p>
+                  <AdminActiveJobActions jobId={job.id} />
                 </div>
               );
             })}

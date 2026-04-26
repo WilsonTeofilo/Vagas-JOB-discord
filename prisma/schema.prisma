@@ -19,6 +19,7 @@ model JobPost {
   discordId   String
   createdAt   DateTime @default(now())
   payload     String
+  messageId   String?  // ID da mensagem no Discord (para exclusão)
 }
 
 model Admin {

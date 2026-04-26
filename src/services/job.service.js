@@ -5,7 +5,7 @@
  */
 
 import prisma from '../lib/prisma.js';
-import { sendToDiscord } from './discord.service.js';
+import { sendToDiscord, deleteFromDiscord } from './discord.service.js';
 
 // ─── Constantes de Negócio ────────────────────────────────────────────────────
 const VAGA_LIMITE_MENSAL_DIRETO = 3;   // acima disso vai pra moderação
@@ -91,20 +91,21 @@ export async function createJobPost({ body, discordId }) {
 
   const status = isPending ? 'PENDING' : 'APPROVED';
 
+  let messageId = null;
+  if (!isPending) {
+    messageId = await sendToDiscord({ body, discordId });
+  }
+
   // Persiste no banco
   await prisma.jobPost.create({
     data: {
       type:      body.type,
       status,
       discordId,
+      messageId,
       payload:   JSON.stringify(body),
     },
   });
-
-  // Se aprovado diretamente, envia pro Discord
-  if (!isPending) {
-    await sendToDiscord({ body, discordId });
-  }
 
   return { isPending };
 }
@@ -125,8 +126,8 @@ export async function approveJobPost(id) {
     throw new Error(`Payload corrompido na postagem ${id}. Não foi possível enviar ao Discord.`);
   }
 
-  await sendToDiscord({ body, discordId: job.discordId });
-  await prisma.jobPost.update({ where: { id }, data: { status: 'APPROVED' } });
+  const messageId = await sendToDiscord({ body, discordId: job.discordId });
+  await prisma.jobPost.update({ where: { id }, data: { status: 'APPROVED', messageId } });
 
   // Notifica o autor
   await prisma.notification.create({
@@ -155,6 +156,28 @@ export async function rejectJobPost(id, reason) {
       }
     });
   }
+}
+
+/**
+ * Remove uma vaga já aprovada (do site e do Discord)
+ */
+export async function deleteApprovedJob(id, reason) {
+  const job = await prisma.jobPost.findUnique({ where: { id } });
+  if (!job) throw new Error('Postagem não encontrada.');
+
+  if (job.messageId) {
+    await deleteFromDiscord(job.messageId, job.type);
+  }
+
+  await prisma.jobPost.delete({ where: { id } });
+
+  await prisma.notification.create({
+    data: {
+      discordId: job.discordId,
+      title: '🗑️ Postagem Removida',
+      message: `Sua postagem de ${job.type === 'vagas' ? 'Vaga' : 'Freelancer'} foi removida do mural público por um administrador.\nMotivo: ${reason}`,
+    }
+  });
 }
 
 /**
