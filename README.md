@@ -33,55 +33,14 @@ O **Trampo** é uma aplicação web que serve como mural de oportunidades para c
 
 ---
 
-## ✨ Funcionalidades
+## ✨ Principais Funcionalidades
 
-### 👥 Para Usuários
-- **Login com Discord** (OAuth2 oficial — nunca acessa sua senha ou mensagens)
-- **Publicar Vagas** de emprego com empresa, nível, regime e descrição
-- **Publicar Perfil de Freelancer** com especialidade, skills, portfólio e formação acadêmica
-- **Mural Público Interativo**: Visualize, filtre (por nível, regime, etc.) e pesquise vagas e freelancers aprovados diretamente no site.
-- **Formulário em etapas** para guiar o preenchimento sem erros
-- **Caixa de Notificações** no cabeçalho: saiba imediatamente se sua vaga foi aprovada ou rejeitada
-- **Seletor de Tema Visual** — cada usuário pode escolher entre os temas criados pelo admin
-- **Falar com Recrutador (1-Click)**: Botões no Mural que abrem a DM do autor da vaga direto no app do Discord.
-
-### 🛡️ Para Administradores
-- **Painel de Moderação** com aprovação e rejeição de vagas pendentes
-- **Motivo de Recusa Obrigatório**: ao rejeitar uma publicação, o admin deve informar o motivo (enviado via notificação in-app para o autor)
-- **Gerenciamento de Equipe**: promoção e remoção de moderadores (Root → Admin)
-- **Sistema de Bootstrap**: o primeiro usuário a acessar o site vira Root automaticamente
-- **Bypass de Rate Limit** para admins publicarem vagas ilimitadas
-- **Editor de Temas Visuais** com preview em tempo real
-- **Editor de Opções do Formulário**: personaliza os níveis, regimes, faculdades, cursos e formações que aparecem no formulário de publicação — com tags visuais, reset para padrão e salvamento por categoria
-- **Notificação Dinâmica de Pendências**: o sino 🔔 exibe alertas em tempo real se existirem vagas aguardando aprovação
-- **Sistema de Anúncios**: cadastro, edição e remoção de banners/links patrocinados exibidos no site, com contador de cliques
-
-### 🎨 Sistema de Temas (Admin)
-- **3 slots de tema** salvos no banco de dados
-- Personalização de: 5 cores principais, GIF/imagem de fundo, blur do fundo, gradientes radiais com posição e opacidade
-- **Preview em tempo real** via iframe sem afetar o site público
-- **Salvar mundialmente** atualiza o visual para todos os usuários instantaneamente (sem redeploy)
-- Usuários podem escolher seu tema preferido individualmente
-
-### 📢 Sistema de Anúncios
-- **Gerenciamento pelo painel admin**: crie e remova anúncios com imagem ou texto
-- **Dois formatos**: banner horizontal (topo do conteúdo) e banner flutuante (canto inferior direito)
-- **Fallback automático**: se não houver anúncio ativo, exibe um link de convite para o Discord da comunidade
-- **Contador de cliques**: rastreamento anônimo via `sendBeacon` — sem bloquear a navegação
-- **Anti-adblock**: tráfego pela própria rota `/api/ads` — sem dependência de redes externas
-
-### 🤖 Integração Discord
-- Envio automático para **Webhooks** configurados por tipo (vagas/freelancers)
-- Mensagens formatadas com **embed rico** e menção ao usuário
-- **Sanitização anti-ping**: `@everyone` e `@here` são bloqueados automaticamente
-- Remoção de menções injetadas `<@userId>` e links de canal `<#channelId>`
-
-### 🚦 Anti-Spam e Rate Limits
-- Máximo de **3 vagas diretas por mês** para usuários comuns — excedente vai para moderação.
-- **30 dias de cooldown** entre publicações de perfil freelancer para usuários comuns.
-- **Administradores não possuem cooldown** e podem publicar ilimitadamente, contornando a moderação.
-- Rate limit de **20 buscas por minuto** no painel de moderação (por IP).
-- **Anti-ping** (no Discord): `@everyone`, `@here` e menções de usuário são sanitizados antes do envio.
+- **Mural Público Interativo**: Filtre e pesquise vagas e freelancers aprovados diretamente no site, com botão para chamar o autor no Discord com 1 clique.
+- **Integração Discord**: Envio automático e formatado para os canais de vagas via Webhook (OAuth2 seguro, sem acessar senhas).
+- **Painel Admin Poderoso**: Aprove, rejeite (com justificativa) ou exclua vagas. O site controla o Discord: apagou no painel, apaga no canal do servidor.
+- **Formulários Dinâmicos**: O Admin pode editar quais Faculdades, Níveis e Regimes aparecem no formulário sem tocar em código.
+- **Sistema de Temas e Anúncios**: Edite as cores do site em tempo real (Glassmorphism) e gerencie banners de anúncios nativos.
+- **Proteções**: Anti-spam (rate limits e cooldown), Anti-ping (@everyone bloqueado) e Segurança total (SSR, CSRF, NextAuth).
 
 ---
 
@@ -127,71 +86,13 @@ O **Trampo** é uma aplicação web que serve como mural de oportunidades para c
 
 ---
 
-## 🔒 Sistema de Segurança
+## 🔒 Stack e Segurança
+Construído com **Next.js 16 (App Router)**, **React 19**, **Prisma v7** e banco **Neon DB (PostgreSQL)**.
 
-O Trampo foi construído com segurança em camadas. Aqui está o que protege você e seus usuários:
-
-### 🍪 Cookies HttpOnly (Sessão Segura)
-O NextAuth.js armazena os tokens de sessão em **cookies HttpOnly + Secure + SameSite=Lax**. Isso significa que nenhum JavaScript rodando no navegador consegue ler ou roubar o token do usuário — blindagem total contra ataques XSS de roubo de sessão.
-
-### 🔐 Variáveis de Ambiente Server-Only
-Todas as chaves sensíveis (`DATABASE_URL`, `DISCORD_CLIENT_SECRET`, `NEXTAUTH_SECRET`, `DISCORD_WEBHOOK_URL_*`) **não têm o prefixo `NEXT_PUBLIC_`**. O Next.js garante que elas nunca chegam ao bundle do cliente — são fisicamente removidas na compilação.
-
-### 🧱 Proteção CSRF nas Rotas Admin
-As rotas de ação administrativa (`/api/admin/action`, `/api/admin/promote`, `/api/admin/demote`) validam os cabeçalhos `Origin` e `Referer` de cada requisição via `src/lib/csrf.js`. Uma requisição de outro site (mesmo com a sessão do admin) é bloqueada com 403.
-
-> **Por que isso importa?** Sem essa proteção, um link malicioso enviado no Discord poderia fazer um admin aprovar vagas de spam ou promover um hacker — apenas clicando no link.
-
-### 🛡️ Proteção SSRF no Setup
-O endpoint `/api/setup/validate` — que testa conexões de banco de dados — bloqueia conexões para IPs privados e reservados:
-- `127.x.x.x` (loopback)
-- `10.x.x.x`, `172.16-31.x.x`, `192.168.x.x` (RFC1918)
-- `169.254.169.254` (**AWS/GCP metadata** — o mais crítico)
-- IPv6 privados (`::1`, `fc00::`, `fd::/8`)
-
-Webhooks só são aceitos se o domínio for exatamente `discord.com`.
-
-### 🔒 Lockdown do Setup em Produção
-Uma vez que o sistema está configurado (`DATABASE_URL` + `NEXTAUTH_SECRET` presentes), o `proxy.js` bloqueia **toda** a rota `/api/setup/*` com 403. O wizard de configuração literalmente desaparece em produção — ninguém consegue sobrescrever seu `.env` remotamente.
-
-### 💉 Proteção contra CSS Injection
-O editor de temas salva configurações no banco de dados. Na hora de gerar o CSS:
-1. **Na escrita** (`theme.service.js`): todos os valores são validados por regex antes de salvar no banco.
-2. **Na leitura** (`lib/theme-css.js`): os valores do banco são **re-validados** antes de injetar no `<style>`. O banco é tratado como "não confiável".
-
-Isso previne que dados corrompidos no banco quebrem o layout ou injetem código nos usuários.
-
-### 🚦 Rate Limiting
-- **Por negócio** (no banco): limite de vagas mensais e cooldown de freelancers por conta Discord
-- **Por IP** (em memória): 20 requisições/minuto no endpoint de busca de usuários do painel admin
-- **Anti-ping** (no Discord): `@everyone`, `@here` e menções de usuário são sanitizados antes do envio
-
-### ✅ Validação Zod em Toda API
-Todas as rotas de API validam o payload com schemas Zod antes de qualquer operação. Campos extras são ignorados, tipos incorretos geram 400 antes de chegar ao banco.
-
----
-
-## 🎨 Sistema de Temas Visuais
-
-### Como Funciona (Sem Redeploy)
-O sistema de temas **não sobrescreve arquivos CSS**. Em vez disso:
-
-1. O Admin cria e salva um tema no banco de dados (PostgreSQL/Neon)
-2. Quando qualquer usuário acessa o site, o `ThemeProvider` (Server Component) lê o tema do banco
-3. O CSS é gerado em memória e injetado como `<style>` no `<head>` na hora da requisição
-4. **Efeito mundial imediato**: mudar o tema padrão no painel atualiza o visual para todos os usuários no próximo request, sem redeploy
-
-```
-Admin salva tema → Banco atualizado → Próximo request de qualquer usuário → CSS novo no <head>
-```
-
-### O que é Personalizável
-- **5 cores principais**: botões, cards, texto, bordas, botão Discord
-- **Fundo da página**: cor sólida ou GIF/imagem via URL (https apenas)
-- **Blur do fundo**: 0–20px de desfoque sobre o GIF
-- **Grid de linhas**: visível ou oculto
-- **Gradiente radial**: 2 pontos com cor, posição X/Y e opacidade independentes
-- **3 slots de tema**: o admin pode alternar entre 3 visuais diferentes sem apagar nenhum
+A plataforma foi blindada para produção:
+- **Cookies HttpOnly** e **Anti-CSRF** (sem injeção de sessão ou links maliciosos).
+- **SSRF Blocked**: O Setup Wizard proíbe acesso a IPs internos (AWS/GCP metadata) garantindo a segurança do seu servidor.
+- **Variaveis Ocultas**: Nenhuma chave da API do Discord ou Banco vai pro lado do cliente (ausência proposital do `NEXT_PUBLIC_`).
 
 ---
 
