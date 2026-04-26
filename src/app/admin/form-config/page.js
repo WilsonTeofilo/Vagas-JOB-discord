@@ -238,6 +238,14 @@ export default function FormConfigPage() {
                 >
                   {isSaving ? 'Salvando...' : '💾 Salvar'}
                 </button>
+                <button
+                  className={s.btnClear}
+                  onClick={() => setDrafts(prev => ({ ...prev, [cat.key]: [] }))}
+                  disabled={isSaving || isReset || options.length === 0}
+                  title="Apagar todas as opções desta categoria"
+                >
+                  🗑️ Limpar Todos
+                </button>
                 {isCustom && (
                   <button
                     className={s.btnReset}

@@ -158,6 +158,28 @@ export async function rejectJobPost(id, reason) {
 }
 
 /**
+ * Busca todas as postagens aprovadas para exibir no Mural Público.
+ */
+export async function getApprovedJobs() {
+  const jobs = await prisma.jobPost.findMany({
+    where: { status: 'APPROVED' },
+    orderBy: { createdAt: 'desc' },
+  });
+  
+  return jobs.map(job => {
+    let parsed = {};
+    try { parsed = JSON.parse(job.payload); } catch (e) {}
+    return {
+      id: job.id,
+      type: job.type,
+      discordId: job.discordId,
+      createdAt: job.createdAt.toISOString(),
+      payload: parsed,
+    };
+  });
+}
+
+/**
  * Verifica se um Discord ID é administrador.
  */
 export async function isAdmin(discordId) {

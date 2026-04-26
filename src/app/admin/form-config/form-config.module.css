@@ -166,6 +166,20 @@
 .btnSave:hover:not(:disabled) { background: var(--primary-h); }
 .btnSave:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.btnClear {
+  padding: 0.55rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 0.5rem;
+  color: #71717a;
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btnClear:hover:not(:disabled) { color: #f87171; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.05); }
+.btnClear:disabled { opacity: 0.4; cursor: not-allowed; }
+
 .btnReset {
   padding: 0.55rem 1rem;
   background: transparent;
