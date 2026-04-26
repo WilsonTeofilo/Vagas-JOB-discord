@@ -34,13 +34,14 @@ export default function MuralClient({ initialJobs, config }) {
       // Filtros específicos para Vagas
       if (activeTab === 'vagas') {
         if (filterLevel && p.level !== filterLevel) return false;
-        if (filterRegime && p.type !== filterRegime) return false; // p.type = regime no form de vagas
+        if (filterRegime && p.regime !== filterRegime) return false;
       }
 
       // Filtros específicos para Freelas
       if (activeTab === 'freelancers') {
-        if (filterLevel && p.eduLevel !== filterLevel) return false;
-        if (filterCourse && p.course !== filterCourse) return false;
+        const firstEdu = p.educations?.[0] || {};
+        if (filterLevel && firstEdu.level !== filterLevel) return false;
+        if (filterCourse && firstEdu.course !== filterCourse) return false;
       }
 
       return true;
@@ -154,14 +155,13 @@ export default function MuralClient({ initialJobs, config }) {
                 <div key={job.id} className={s.card}>
                   <div className={s.cardHeader}>
                     <div>
-                      <h3 className={s.cardTitle}>{p.role}</h3>
+                      <h3 className={s.cardTitle}>{p.title}</h3>
                       <span className={s.cardSubtitle}>🏢 {p.company}</span>
                     </div>
                   </div>
                   <div className={s.cardBadges}>
                     <span className={`${s.badge} ${s.badgePrimary}`}>{p.level}</span>
-                    <span className={s.badge}>{p.type}</span>
-                    <span className={s.badge}>💰 {p.salary || 'A combinar'}</span>
+                    <span className={s.badge}>{p.regime}</span>
                   </div>
                   <p className={s.cardDesc}>{p.description}</p>
                   
@@ -180,13 +180,14 @@ export default function MuralClient({ initialJobs, config }) {
               <div key={job.id} className={s.card}>
                 <div className={s.cardHeader}>
                   <div>
-                    <h3 className={s.cardTitle}>{p.name}</h3>
-                    <span className={s.cardSubtitle}>✨ {p.specialty}</span>
+                    <h3 className={s.cardTitle}>{p.company}</h3>
+                    <span className={s.cardSubtitle}>✨ {p.title}</span>
                   </div>
                 </div>
                 <div className={s.cardBadges}>
-                  <span className={`${s.badge} ${s.badgePrimary}`}>{p.eduLevel}</span>
-                  <span className={s.badge}>{p.course}</span>
+                  <span className={`${s.badge} ${s.badgePrimary}`}>{p.availability}</span>
+                  {p.educations?.[0]?.course && <span className={s.badge}>{p.educations[0].course}</span>}
+                  {p.educations?.[0]?.level && <span className={s.badge}>{p.educations[0].level}</span>}
                 </div>
                 <p className={s.cardDesc}>{p.skills}</p>
                 
