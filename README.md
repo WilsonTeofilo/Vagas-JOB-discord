@@ -39,9 +39,11 @@ O **Trampo** é uma aplicação web que serve como mural de oportunidades para c
 - **Login com Discord** (OAuth2 oficial — nunca acessa sua senha ou mensagens)
 - **Publicar Vagas** de emprego com empresa, nível, regime e descrição
 - **Publicar Perfil de Freelancer** com especialidade, skills, portfólio e formação acadêmica
+- **Mural Público Interativo**: Visualize, filtre (por nível, regime, etc.) e pesquise vagas e freelancers aprovados diretamente no site.
 - **Formulário em etapas** para guiar o preenchimento sem erros
 - **Caixa de Notificações** no cabeçalho: saiba imediatamente se sua vaga foi aprovada ou rejeitada
 - **Seletor de Tema Visual** — cada usuário pode escolher entre os temas criados pelo admin
+- **Falar com Recrutador (1-Click)**: Botões no Mural que abrem a DM do autor da vaga direto no app do Discord.
 
 ### 🛡️ Para Administradores
 - **Painel de Moderação** com aprovação e rejeição de vagas pendentes
@@ -235,13 +237,15 @@ copie do seu terminal o endereço localhost, ex: `http://localhost:3000` — ap�
 | 4️⃣ Autenticação | NEXTAUTH_SECRET (pode gerar automaticamente) e URL do site |
 | 5️⃣ Comunidade | Link permanente de convite do seu servidor |
 
-Ao concluir o Wizard, o `.env.local` é gerado e a aplicação vai dar uma leve desconectada (o servidor encerrará sozinho).
+Ao concluir o Wizard, o `.env.local` é gerado e o sistema tenta configurar o banco de dados automaticamente. O servidor dará uma leve desconectada e reiniciará.
 
-### ⚠️ PASSO OBRIGATÓRIO: Sincronizar o banco de dados
+### ⚠️ Passo de Verificação (Apenas se ocorrer Erro 500)
 
-**Se você não fizer isso, o site vai quebrar com erro 500 ao tentar publicar vagas ou ler notificações, pois as tabelas não existirão no banco de dados!**
+**Na grande maioria das vezes, o Setup Wizard sincroniza o banco automaticamente.** Porém, dependendo do seu sistema operacional, o comando automático pode falhar.
 
-1. Vá para o terminal onde o servidor estava rodando. Se ele não parou, pressione `CTRL+C`.
+Se ao tentar acessar o site você receber um **Erro 500**, significa que o banco não foi sincronizado. Siga os passos:
+
+1. Vá para o terminal onde o servidor estava rodando. Pressione `CTRL+C` para parar.
 2. Rode o comando abaixo para criar as tabelas no seu banco Neon DB:
 ```bash
 npx prisma db push
