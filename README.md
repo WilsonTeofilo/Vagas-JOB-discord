@@ -137,6 +137,7 @@ copie do seu terminal o endereço localhost, ex: `http://localhost:3000` — ap�
 | 3️⃣ App Discord | Client ID e Client Secret para OAuth2. Acesse a aba "OAuth2", crie um Redirect, cole a URL exata do seu site e salve. |
 | 4️⃣ Autenticação | NEXTAUTH_SECRET (pode gerar automaticamente) e URL do site |
 | 5️⃣ Comunidade | Link permanente de convite do seu servidor |
+| 6️⃣ Cron Jobs (Vercel) | Vá até as configurações do seu projeto na Vercel -> Settings -> Environment Variables, e crie uma variável chamada `CRON_SECRET` com uma senha forte. Isso ativará a limpeza automática de vagas expiradas. |
 
 Ao concluir o Wizard, o `.env.local` é gerado e o sistema tenta configurar o banco de dados automaticamente. O servidor dará uma leve desconectada e reiniciará.
 
@@ -199,6 +200,10 @@ DISCORD_CLIENT_SECRET="secret_do_seu_app"
 # Configure em src/lib/brand.js → discordInvite para personalizar o link
 # exibido no modal de sucesso do formulário e na tela de login.
 # NEXT_PUBLIC_DISCORD_SERVER_URL="https://discord.gg/SEU_LINK_PERMANENTE"
+
+# ── Segredo do Cron (Apenas Produção Vercel) ───────────────────────────
+# Protege a rota diária de limpeza e renovação de vagas expiradas
+# CRON_SECRET="senha_forte_aleatoria"
 ```
 
 ### Como criar o App no Discord Developer Portal

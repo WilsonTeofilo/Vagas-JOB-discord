@@ -20,6 +20,9 @@ model JobPost {
   createdAt   DateTime @default(now())
   payload     String
   messageId   String?  // ID da mensagem no Discord (para exclusão)
+  expiresAt   DateTime? // Data de expiração da vaga (30 dias após aprovada)
+  renewRequested Boolean @default(false) // Se o usuário pediu renovação
+  expirationNotified Boolean @default(false) // Se já enviamos o aviso de 5 dias
 }
 
 model Admin {

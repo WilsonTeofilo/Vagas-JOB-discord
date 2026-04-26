@@ -103,6 +103,7 @@ export async function createJobPost({ body, discordId }) {
       status,
       discordId,
       messageId,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       payload:   JSON.stringify(body),
     },
   });
@@ -127,7 +128,14 @@ export async function approveJobPost(id) {
   }
 
   const messageId = await sendToDiscord({ body, discordId: job.discordId });
-  await prisma.jobPost.update({ where: { id }, data: { status: 'APPROVED', messageId } });
+  await prisma.jobPost.update({ 
+    where: { id }, 
+    data: { 
+      status: 'APPROVED', 
+      messageId: messageId,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    } 
+  });
 
   // Notifica o autor
   await prisma.notification.create({
