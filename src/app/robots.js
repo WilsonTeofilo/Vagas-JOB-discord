@@ -8,7 +8,7 @@ export default function robots() {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/sobre', '/publicar'],
+        allow: ['/', '/sobre', '/publicar', '/mural'],
         disallow: ['/admin', '/api/', '/setup'],
       },
     ],

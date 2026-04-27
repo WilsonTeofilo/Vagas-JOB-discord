@@ -24,5 +24,11 @@ export default function sitemap() {
       changeFrequency: 'weekly',
       priority: 0.7,
     },
+    {
+      url: `${base}/mural`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
   ];
 }

@@ -56,6 +56,9 @@ export const metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+  },
 };
 
 export const viewport = {
