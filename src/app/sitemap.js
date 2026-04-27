@@ -3,7 +3,8 @@
  * Rotas privadas (admin, api, setup) são excluídas.
  */
 export default function sitemap() {
-  const base = process.env.NEXTAUTH_URL ?? 'https://trampo.vercel.app';
+  const rawBase = process.env.NEXTAUTH_URL ?? 'https://trampo.vercel.app';
+  const base = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase;
 
   return [
     {
