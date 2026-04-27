@@ -113,14 +113,26 @@ export async function deleteFromDiscord(messageId, type) {
   try {
     // Como Webhooks não podem deletar tópicos de fórum inteiros, a solução
     // é SOBRESCREVER o conteúdo da mensagem original (PATCH) com um aviso.
-    // IMPORTANTE: Para o Discord, se a mensagem está num tópico, é OBRIGATÓRIO passar o ?thread_id.
-    const response = await fetch(`${webhookUrl}/messages/${messageId}?thread_id=${messageId}`, {
+    const payload = JSON.stringify({
+      content: "❌ **[ VAGA ENCERRADA / REMOVIDA ]** ❌\n\nEsta oportunidade foi deletada do sistema e não está mais disponível.\n*(Aviso para Admins: Este tópico/mensagem já pode ser deletado manualmente).*"
+    });
+
+    // Tentativa 1: Canal de Texto Comum (sem thread_id)
+    let response = await fetch(`${webhookUrl}/messages/${messageId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        content: "❌ **[ VAGA ENCERRADA / REMOVIDA ]** ❌\n\nEsta oportunidade foi deletada do sistema e não está mais disponível.\n*(Aviso para Admins: Este tópico já pode ser deletado manualmente).*"
-      })
+      body: payload
     });
+
+    // Tentativa 2: Canal de Fórum (requer ?thread_id=ID)
+    if (!response.ok) {
+      response = await fetch(`${webhookUrl}/messages/${messageId}?thread_id=${messageId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      });
+    }
+
     if (!response.ok) {
       console.warn(`Aviso: falha ao sobrescrever mensagem ${messageId} no Discord (${response.status})`);
     }
