@@ -3,11 +3,11 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
 import prisma from "../../../lib/prisma";
 import { deleteFromDiscord } from "../../../services/discord.service";
-import { validateCsrf } from "../../../lib/csrf";
+import { verifyCsrf } from "../../../lib/csrf";
 
 export async function POST(req) {
   try {
-    if (!validateCsrf(req)) {
+    if (!verifyCsrf(req)) {
       return NextResponse.json({ error: 'Origem inválida (CSRF falhou).' }, { status: 403 });
     }
 
